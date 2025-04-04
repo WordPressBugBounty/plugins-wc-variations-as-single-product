@@ -1,0 +1,1 @@
+# plugins-wc-variations-as-single-product
