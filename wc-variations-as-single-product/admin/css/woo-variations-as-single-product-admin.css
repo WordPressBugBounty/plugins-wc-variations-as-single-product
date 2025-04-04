@@ -1,0 +1,70 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+ .wvasp-meta-checkbox label{
+    margin-left: 10px;
+ }
+ .wc-settings-row-wvasp-pro-link-field-wrapper {
+	opacity: 0.7;
+}
+.wc-settings-row-wvasp-pro-link-field-wrapper input {
+	opacity: 1!important;
+	background: #fff;
+	border: 1px solid #8c8f94;
+	box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+}
+.form-table .wc-settings-row-wvasp-pro-link-field-wrapper th {
+	line-height: 1.6;
+}
+.form-table .wc-settings-row-wvasp-pro-link-field-wrapper label {
+	line-height: 1.6;
+}
+.wc-settings-row-wvasp-pro-link-field-wrapper .premium-tag-link,
+.wvasp-meta-checkbox  .premium-tag-link{
+	background: #EFC20F;
+	padding: 6px 10px;
+	border-radius: 5px;
+	text-decoration: none;
+	color: #000;
+	white-space: nowrap;
+}
+.wvasp-get-pro {
+	color: #93003f;
+	font-weight: bold;
+}
+input.wvasp-text-field {
+	padding: 5px 10px !important;
+}
+.form-row.wvasp-variation-category-row .select2.select2-container,
+.form-row.wvasp-variation-tag-row .select2.select2-container {
+	width: 100% !important;
+	margin: 2px auto;
+}
+.wvasp-in-beta {
+	background: #5046E5;
+	color: #fff;
+	padding: 6px 10px;
+	border-radius: 5px;
+}
+.wvasp-in-legacy {
+	background: #c00;
+	color: #fff;
+	padding: 6px 10px;
+	border-radius: 5px;
+}
+.wvasp-notice {
+	background: #A1E2A0;
+	padding: 6px 10px;
+	float: left;
+	margin-top: 15px;
+	/* font-size: 12px; */
+}
+.wvasp-notice.wvasp-notice-error {
+	background: #f2c1bf;
+}
+
+.wc-settings-row-wvasp-btach-field-wrapper {
+	border: 2px dashed #5c815b;
+	background: #d7f3d6;
+}
