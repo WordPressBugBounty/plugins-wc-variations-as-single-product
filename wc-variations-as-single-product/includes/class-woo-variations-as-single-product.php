@@ -123,6 +123,11 @@ class Woo_Variations_As_Single_Product {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-woo-variations-as-single-product-exclude-products.php';
 
+		/**
+		 * Taxnonomy handle for variations.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-woo-variations-as-single-product-taxonomy.php';
+
 		$this->loader = new Woo_Variations_As_Single_Product_Loader();
 
 	}
@@ -157,12 +162,18 @@ class Woo_Variations_As_Single_Product {
 
 		$pugin_exclude_product_instance = new Woo_Variations_As_Single_Product_Exclude_Products( $this->get_version() );
 
+		// Initialize Plugin Insights
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-woo-variations-as-single-product-insights.php';
+		Woo_Variations_As_Single_Product_Insights::instance();
+
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'missing_woocommerce_notice');
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'settings_page_notice');
 		$this->loader->add_filter( 'plugin_action_links_'. WC_VARIATIONS_AS_SINGLE_PRODUCT__BASE, $plugin_admin, 'settings_link', 10, 2);
+
+		$this->loader->add_filter('admin_body_class', $plugin_admin, 'admin_body_class', 10, 1);
 
 		// Pro Update manual notice (TEMP)
 		$this->loader->add_action( 'after_plugin_row_wc-variations-as-single-product-pro/wc-variations-as-single-product-pro.php', $plugin_admin, 'manual_update_notice_for_pro_plugin', 10, 2 );
@@ -171,6 +182,9 @@ class Woo_Variations_As_Single_Product {
 		$this->loader->add_filter( 'woocommerce_settings_tabs_array', $plugin_admin, 'add_settings_tab', 99 );
 		$this->loader->add_action( 'woocommerce_settings_tabs_sp_variations_as_product', $plugin_admin, 'settings_tab' );
 		$this->loader->add_action( 'woocommerce_update_options_sp_variations_as_product', $plugin_admin, 'save_settings' );
+		// Register AJAX actions
+		$this->loader->add_action( 'wp_ajax_wvasp_save_settings', $plugin_admin, 'save_settings_ajax' );
+		$this->loader->add_action( 'wp_ajax_wvasp_batch_update_product_variations', $plugin_admin, 'batch_update_product_variations' );
 
 		// Settings for single variation product tab
 		$this->loader->add_filter( 'woocommerce_product_data_tabs', $plugin_admin, 'add_single_variation_tab' );
@@ -180,15 +194,8 @@ class Woo_Variations_As_Single_Product {
 		$this->loader->add_action( 'woocommerce_product_after_variable_attributes', $plugin_admin, 'product_variation_meta_fields', 10, 3 );
 		$this->loader->add_action( 'woocommerce_save_product_variation', $plugin_admin, 'save_variation_settings_fields', 10, 2 );
 
-		$this->loader->add_action( 'wvasp_terms_update_schedule', $plugin_admin, 'wvasp_terms_update' );
-
 		//$this->loader->add_action( 'save_post', $plugin_admin, 'wvasp_update_on_product_update', 10, 3 );
 		$this->loader->add_action( 'woocommerce_update_product', $plugin_admin, 'wvasp_update_on_product_update', 10, 2 );
-
-		// Exclude Product Schedule on settings save
-		$this->loader->add_action( 'wvasp_schedule_product_exclusion', $pugin_exclude_product_instance, 'trigger_variable_product_exclusion' );
-		// Exclude Product on product update
-		$this->loader->add_action( 'woocommerce_update_product', $pugin_exclude_product_instance, 'variable_product_exclusion_on_product_update', 10, 2 );
 	}
 
 	/**
@@ -209,14 +216,6 @@ class Woo_Variations_As_Single_Product {
 		$this->loader->add_action( 'woocommerce_product_query', $plugin_public, 'variation_as_single_product', 20 );
 		$this->loader->add_action( 'wc_product_query_args_filter', $plugin_public, 'variation_as_single_product', 20 );
 		$this->loader->add_action( 'woocommerce_shortcode_products_query', $plugin_public, 'variation_as_single_product_shortcode', 20 );
-
-		// Theme & Plugin support for premium version
-		if ( defined( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION' ) ) {
-			$this->loader->add_filter( 'avf_avia_product_slider_defaults', $plugin_public, 'variation_as_single_product_shortcode', 10 ); //Enfold Theme
-			$this->loader->add_filter( 'avia_product_slide_query', $plugin_public, 'variation_as_single_product_shortcode', 10 ); //Enfold Theme
-			$this->loader->add_filter( 'jet-engine/listing/grid/posts-query-args', $plugin_public, 'variation_as_single_product_shortcode', 10 ); //JetEngine Plugin
-			$this->loader->add_filter( 'breakdance_woocommerce_get_products_query', $plugin_public, 'variation_as_single_product_shortcode' , 10, 1 ); //Breakdance Builder
-		}
 
 		// General filter to use in different query args
 		$this->loader->add_filter( 'wvasp_product_query_args_filter', $plugin_public, 'variation_as_single_product_shortcode' , 10, 1 ); //General Use

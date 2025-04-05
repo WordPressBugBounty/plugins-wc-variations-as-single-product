@@ -69,8 +69,35 @@ class Woo_Variations_As_Single_Product_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		//wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woo-variations-as-single-product-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woo-variations-as-single-product-admin.js', array( 'jquery' ), $this->version, false );
 
+		// Localize script to pass AJAX URL and nonce
+		wp_localize_script( 'wc-variations-as-single-product', 'wvasp_ajax', [
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce'    => wp_create_nonce( 'wvasp_save_settings_nonce' ),
+			'i18n'     => array(
+				'updating'      => __('Product are updating', 'wc-variations-as-single-product'),
+				'progress_text' => __('%1$s of %2$s products updated', 'wc-variations-as-single-product'),
+				'completed'     => __('Update Completed!', 'wc-variations-as-single-product'),
+				'error_setting' => __('An error occurred while saving settings.', 'wc-variations-as-single-product'),
+				'error_update'  => __('An error occurred while updating product variations.', 'wc-variations-as-single-product')
+			)
+		] );
+	}
+
+	/**
+	 * Add admin body class for the plugin settings page.
+	 * 
+	 * @since    4.0.0
+	 * @param    string    $classes    Body classes
+	 * @return   string    Body classes
+	 */
+	public function admin_body_class( $classes ) {
+		$screen = get_current_screen();
+		if ( $screen->id === 'woocommerce_page_wc-settings' && isset( $_GET['tab'] ) && $_GET['tab'] === 'sp_variations_as_product' ) {
+			$classes .= ' woocommerce-tab-wvasp';
+		}
+		return $classes;
 	}
 
 	/**
@@ -95,7 +122,7 @@ class Woo_Variations_As_Single_Product_Admin {
 	 */
 	public function settings_page_notice() {
 		//if ( isset( $_GET['page'] ) && $_GET['page'] === 'wc-settings' && isset( $_GET['tab'] ) && $_GET['tab'] === 'sp_variations_as_product' ) {
-			if ( defined( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION' ) && version_compare( WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION, '3.4.5', '<' ) ) {
+			if ( defined( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION' ) && version_compare( WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION, '4.0.0', '<' ) ) {
 			?>
 				<div class="notice notice-error">
 					<p><?php echo sprintf(
@@ -168,10 +195,12 @@ class Woo_Variations_As_Single_Product_Admin {
 		$disable_tag_page_single_variation = get_option( 'wvasp_disable_tag_page_single_variation', 'no' );
 		$disable_search_page_single_variation = get_option( 'wvasp_disable_search_page_single_variation', 'no' );
 		$hide_parent_products   = get_option( 'wvasp_hide_parent_products', 'no' ); //wvasp
+		$exclude_parent_products_forcefully = get_option( 'wvasp_exclude_parent_products_forcefully', 'no' );
 		$exclude_category_fields   = get_option( 'wvasp_exclude_category_fields', array() );
 		$exclude_child_category_fields   = get_option( 'wvasp_exclude_child_category_fields', 'no' );
 		$exclude_tag_fields        = get_option( 'wvasp_exclude_tag_fields', array() );
 		$legacy_product_exclude	= get_option( 'wvasp_legacy_product_exclude', 'no' );
+		$batch_processing_amount = get_option( 'wvasp_batch_processing_amount', 10 );
 
 		$settings = array(
 			'section_title' => array(
@@ -218,6 +247,16 @@ class Woo_Variations_As_Single_Product_Admin {
 				'checked' => $hide_parent_products === 'yes',
 				'value'   => $hide_parent_products
 			),
+			'exclude_parent_products_forcefully' => array(
+				'name'    => __( 'Forcefully Hide Parent Products', 'wc-variations-as-single-product' ),
+				'type'    => 'checkbox',
+				'desc'    => __( 'Forcefully hide parent products on shop and category pages. The parent product will be excluded even if all its variations are hidden. Not recommended for typical use cases.', 'wc-variations-as-single-product' ),
+				'id'      => 'wvasp_exclude_parent_products_forcefully',
+				'row_class'	=> 'wvasp-hide-field',
+				'default' => 'no',
+				'checked' => $exclude_parent_products_forcefully === 'yes',
+				'value'   => $exclude_parent_products_forcefully
+			),
 			'enable_filter_by_attribute' => array(
 				'name'    => __( 'Enable Filter by Attribute', 'wc-variations-as-single-product' ),
 				'type'    => 'checkbox',
@@ -232,9 +271,9 @@ class Woo_Variations_As_Single_Product_Admin {
 				),
 			),
 			'exclude_category_fields' => array(
-				'name'     => __( 'Exclude Product Categories', 'woo-variations-as-single-product' ),
+				'name'     => __( 'Exclude Product Categories', 'wc-variations-as-single-product' ),
 				'type'     => 'multiselect',
-				'desc'     => __( 'Select the product categories that will be excluded from single variation.', 'woo-variations-as-single-product' ),
+				'desc'     => __( 'Select the product categories that will be excluded from single variation.', 'wc-variations-as-single-product' ),
 				'id'       => 'wvasp_exclude_category_fields',
 				'class'    => 'wc-enhanced-select',
 				'options'  => $this->get_woocommerce_category_list(),
@@ -248,18 +287,18 @@ class Woo_Variations_As_Single_Product_Admin {
 				'value'	=> $exclude_child_category_fields,
 			),
 			'exclude_tag_fields' => array(
-				'name'     => __( 'Exclude Product Tags', 'woo-variations-as-single-product' ),
+				'name'     => __( 'Exclude Product Tags', 'wc-variations-as-single-product' ),
 				'type'     => 'multiselect',
-				'desc'     => __( 'Select the product tags that will be excluded from single variation.', 'woo-variations-as-single-product' ),
+				'desc'     => __( 'Select the product tags that will be excluded from single variation.', 'wc-variations-as-single-product' ),
 				'id'       => 'wvasp_exclude_tag_fields',
 				'class'    => 'wc-enhanced-select',
 				'options'  => $this->get_woocommerce_tag_list(),
 				'value' => $exclude_tag_fields,
 			),
 			'exclude_attributes_fields' => array(
-				'name'     => __( 'Exclude Product Attributes', 'woo-variations-as-single-product' ),
+				'name'     => __( 'Exclude Product Attributes', 'wc-variations-as-single-product' ),
 				'type'     => 'text',
-				'desc'     => __( 'Select the product attribute that will be excluded from single variation.', 'woo-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
+				'desc'     => __( 'Select the product attribute that will be excluded from single variation.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
 				'id'       => 'wvasp_exclude_attributes_fields',
 				'row_class'	=> 'wvasp-pro-link-field-wrapper',
 				'class'    => 'wvasp-text-field',
@@ -295,9 +334,9 @@ class Woo_Variations_As_Single_Product_Admin {
 				),
 			),
 			'variation_title_field' => array(
-				'name'     => __( 'Single Variation Title', 'woo-variations-as-single-product' ),
+				'name'     => __( 'Single Variation Title', 'wc-variations-as-single-product' ),
 				'type'     => 'text',
-				'desc'     => __( 'Global title for variation single product. Use <strong>{title}</strong> for parent title and <strong>{attributes}</strong> for attributes values.', 'woo-variations-as-single-product' ). ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>'.__( '<br/>E.g. {title} in {attributes} => Hoodie in Red, XXL<br/>E.g. {title} in {attributes} => Hoodie in Color Red <em>(Attributes Structure : {attribute_name} {attribute_value})</em><br/>E.g. {attributes} {title} => Red Hoodie <em>(Attributes Structure : {attribute_value})</em>', 'woo-variations-as-single-product' ),
+				'desc'     => __( 'Global title for variation single product. Use <strong>{title}</strong> for parent title and <strong>{attributes}</strong> for attributes values.', 'wc-variations-as-single-product' ). ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>'.__( '<br/>E.g. {title} in {attributes} => Hoodie in Red, XXL<br/>E.g. {title} in {attributes} => Hoodie in Color Red <em>(Attributes Structure : {attribute_name} {attribute_value})</em><br/>E.g. {attributes} {title} => Red Hoodie <em>(Attributes Structure : {attribute_value})</em>', 'wc-variations-as-single-product' ),
 				'id'       => 'wvasp_variation_title_field',
 				'row_class'	=> 'wvasp-pro-link-field-wrapper',
 				'class'    => 'wvasp-text-field',
@@ -307,9 +346,9 @@ class Woo_Variations_As_Single_Product_Admin {
 				),
 			),
 			'variation_title_attributes_field' => array(
-				'name'     => __( 'Attributes Structure', 'woo-variations-as-single-product' ),
+				'name'     => __( 'Attributes Structure', 'wc-variations-as-single-product' ),
 				'type'     => 'text',
-				'desc'     => __( 'Defines how attribute data is structured. Use <strong>{attribute_name}</strong> for attribute\'s name and <strong>{attribute_value}</strong> for value.'). ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>'.__('<br/>E.g. {attribute_name} {attribute_value} => Color Red<br/>E.g. {attribute_name}: {attribute_value} => Color: Red<br/>E.g. {attribute_value} => Red', 'woo-variations-as-single-product' ),
+				'desc'     => __( 'Defines how attribute data is structured. Use <strong>{attribute_name}</strong> for attribute\'s name and <strong>{attribute_value}</strong> for value.'). ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>'.__('<br/>E.g. {attribute_name} {attribute_value} => Color Red<br/>E.g. {attribute_name}: {attribute_value} => Color: Red<br/>E.g. {attribute_value} => Red', 'wc-variations-as-single-product' ),
 				'id'       => 'wvasp_variation_title_attributes_field',
 				'row_class'	=> 'wvasp-pro-link-field-wrapper',
 				'class'    => 'wvasp-text-field',
@@ -319,9 +358,9 @@ class Woo_Variations_As_Single_Product_Admin {
 				),
 			),
 			'variation_title_attributes_seperator_field' => array(
-				'name'     => __( 'Attributes Seperator', 'woo-variations-as-single-product' ),
+				'name'     => __( 'Attributes Seperator', 'wc-variations-as-single-product' ),
 				'type'     => 'text',
-				'desc'     => __( 'Specifies the character used to separate attribute values, such as comma (,) or "and".', 'woo-variations-as-single-product' ). ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
+				'desc'     => __( 'Specifies the character used to separate attribute values, such as comma (,) or "and".', 'wc-variations-as-single-product' ). ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
 				'id'       => 'wvasp_variation_title_attributes_seperator_field',
 				'row_class'	=> 'wvasp-pro-link-field-wrapper',
 				'class'    => 'wvasp-text-field',
@@ -346,7 +385,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'sort_popularity_variation_product' => array(
 				'name'    => __( 'Sort(Popularity) variations product', 'wc-variations-as-single-product' ),
 				'type'    => 'checkbox',
-				'desc'    => __( 'Sort variation products based on individual popularity. The parent product’s popularity reflects the combined popularity of all its variations, while each variation displays popularity based on its specific ranking within orders.', 'wc-variations-as-single-product' ). ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
+				'desc'    => __( 'Sort variation products based on individual popularity. The parent product\'s popularity reflects the combined popularity of all its variations, while each variation displays popularity based on its specific ranking within orders.', 'wc-variations-as-single-product' ). ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
 				'id'      => 'wvasp_sort_popularity_variation_product',
 				'row_class'	=> 'wvasp-pro-link-field-wrapper',
 				'default' => 'no',
@@ -457,13 +496,23 @@ class Woo_Variations_As_Single_Product_Admin {
 				'checked' => $legacy_product_exclude === 'yes',
 				'value'   => $legacy_product_exclude
 			),
+			'batch_processing_amount' => array(
+				'name'     => __( 'Batch processing amount', 'wc-variations-as-single-product' ),
+				'type'     => 'text',
+				'desc'     => __( 'Number of variations to process per batch during updates (default is 10). Increase this value if your store has more available memory.', 'wc-variations-as-single-product' ),
+				'id'       => 'wvasp_batch_processing_amount',
+				'row_class'	=> 'wvasp-hide-field',
+				'class'    => 'wvasp-text-field',
+				'value'    => $batch_processing_amount ? $batch_processing_amount : 10,
+			),
 			'section_end' => array(
 				'type'     => 'sectionend',
 				'id'       => 'variations_as_product_section_end'
 			)
 		);
 
-		return apply_filters( 'woo_variations_as_single_product_settings', $settings );
+		//return apply_filters( 'woo_variations_as_single_product_settings', $settings );
+		return $settings;
 	}
 	
 	/** 
@@ -486,6 +535,9 @@ class Woo_Variations_As_Single_Product_Admin {
 
 		$wvasp_hide_parent_products = isset( $_POST['wvasp_hide_parent_products'] ) ? 'yes' : 'no';
 		update_option( 'wvasp_hide_parent_products', $wvasp_hide_parent_products );
+
+		$wvasp_exclude_parent_products_forcefully = isset( $_POST['wvasp_exclude_parent_products_forcefully'] ) ? 'yes' : 'no';
+		update_option( 'wvasp_exclude_parent_products_forcefully', $wvasp_exclude_parent_products_forcefully );
 	
 		$wvasp_exclude_category_fields = isset( $_POST['wvasp_exclude_category_fields'] ) ? array_map( 'sanitize_text_field', $_POST['wvasp_exclude_category_fields'] ) : array();
 		update_option( 'wvasp_exclude_category_fields', $wvasp_exclude_category_fields );
@@ -499,14 +551,115 @@ class Woo_Variations_As_Single_Product_Admin {
 		$wvasp_legacy_product_exclude = isset( $_POST['wvasp_legacy_product_exclude'] ) ? 'yes' : 'no';
 		update_option( 'wvasp_legacy_product_exclude', $wvasp_legacy_product_exclude );
 
-		// Fire product exclusion schedule
-		$this->fire_schedule_product_exclusion_on_setting_change();
+		$wvasp_batch_processing_amount = isset( $_POST['wvasp_batch_processing_amount'] ) ? intval( $_POST['wvasp_batch_processing_amount'] ) : 10;
+		update_option( 'wvasp_batch_processing_amount', $wvasp_batch_processing_amount );
+	}
+	
+	/**
+	 * Save settings via AJAX.
+	 * 
+	 * @return void
+	 * @since 4.0.0
+	 */
+	public function save_settings_ajax() {
+		// Verify nonce for security
+		//check_ajax_referer( 'wvasp_save_settings_nonce', 'nonce' );
+		if ( ! check_ajax_referer( 'wvasp_save_settings_nonce', 'nonce', false ) ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid nonce.', 'wc-variations-as-single-product' ) ] );
+			return;
+		}
+
+		// Check if user has permission
+		if ( ! current_user_can( 'manage_woocommerce' )) {
+			wp_send_json_error( [ 'message' => __( 'You do not have permission to perform this action.', 'wc-variations-as-single-product' ) ] );
+			return;
+		}
+
+		// Sanitize and update settings
+		$settings = [
+			'wvasp_enable_variations_as_product' => isset( $_POST['wvasp_enable_variations_as_product'] ) ? 'yes' : 'no',
+			'wvasp_disable_category_page_single_variation' => isset( $_POST['wvasp_disable_category_page_single_variation'] ) ? 'yes' : 'no',
+			'wvasp_disable_tag_page_single_variation' => isset( $_POST['wvasp_disable_tag_page_single_variation'] ) ? 'yes' : 'no',
+			'wvasp_disable_search_page_single_variation' => isset( $_POST['wvasp_disable_search_page_single_variation'] ) ? 'yes' : 'no',
+			'wvasp_hide_parent_products' => isset( $_POST['wvasp_hide_parent_products'] ) ? 'yes' : 'no',
+			'wvasp_exclude_parent_products_forcefully' => isset( $_POST['wvasp_exclude_parent_products_forcefully'] ) ? 'yes' : 'no',
+			'wvasp_exclude_category_fields' => isset( $_POST['wvasp_exclude_category_fields'] ) ? array_map( 'sanitize_text_field', $_POST['wvasp_exclude_category_fields'] ) : [],
+			'wvasp_exclude_child_category_fields' => isset( $_POST['wvasp_exclude_child_category_fields'] ) ? 'yes' : 'no',
+			'wvasp_exclude_tag_fields' => isset( $_POST['wvasp_exclude_tag_fields'] ) ? array_map( 'sanitize_text_field', $_POST['wvasp_exclude_tag_fields'] ) : [],
+			'wvasp_legacy_product_exclude' => isset( $_POST['wvasp_legacy_product_exclude'] ) ? 'yes' : 'no',
+			'wvasp_batch_processing_amount' => isset( $_POST['wvasp_batch_processing_amount'] ) ? intval( $_POST['wvasp_batch_processing_amount'] ) : 10,
+		];
+
+		// Add filter to allow other settings to be saved
+		$settings = apply_filters( 'wvasp_save_settings_ajax', $settings );
+	
+		foreach ( $settings as $key => $value ) {
+			update_option( $key, $value );
+		}
+
+		// Get total variable products
+		$total_products = wc_get_products( array(
+			'type'   => 'variable',
+			'limit'  => -1,
+			'return' => 'ids',
+		) );
+		$variable_product_count = count( $total_products );
+
+		// Initially remove metadata '_wvasp_exclude' = 'yes' from all products and variations
+		Woo_Variations_As_Single_Product_Exclude_Products::remove_exclude_meta_from_all_products();
+	
+		wp_send_json_success( [ 'message' => __( 'Settings saved successfully!', 'wc-variations-as-single-product' ), 'varible_product_count' => $variable_product_count ] );
+	}
+
+	/**
+	 * Batch update product variations - Taxonomy, Exclude Products
+	 * 
+	 * @return void
+	 * @since 4.0.0
+	 */
+	public function batch_update_product_variations(){
+		// Generale settings
+		$settings = [];
+        $settings['exclude_parent_products'] = get_option( 'wvasp_hide_parent_products', 'no' );
+		$settings['exclude_parent_products_forcefully'] = get_option( 'wvasp_exclude_parent_products_forcefully', 'no' );
+        $settings['exclude_category_fields'] = get_option( 'wvasp_exclude_category_fields', array() );
+        $settings['exclude_child_category_fields'] = get_option( 'wvasp_exclude_child_category_fields', 'no' );
+        $settings['exclude_tag_fields']     = get_option( 'wvasp_exclude_tag_fields', array() );
+
+		$batch_processing_amount = get_option( 'wvasp_batch_processing_amount', 10 );
+
+		$offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0; // Offset for batch processing
+		$limit = $batch_processing_amount ? $batch_processing_amount : 10; // Limit for batch processing, default 10
+
+		$product_ids = wc_get_products( array(
+			'type'   => 'variable',
+			'limit'  => $limit,
+			'offset' => $offset,
+			'return' => 'ids',
+		) );
+		
+		//error_log('Product IDs: '.print_r($product_ids, true));
+
+		// make instance of class
+		$taxonomy_instance = new Woo_Variations_As_Single_Product_Taxonomy();
+		$exclude_instance = new Woo_Variations_As_Single_Product_Exclude_Products( $this->version );
+
+		// Process the current batch to update variation product terms
+		foreach ( $product_ids as $product_id ) {
+			$product = wc_get_product( $product_id );
+
+            $taxonomy_instance->single_product_taxonomy_update( $product_id, $product );
+			$exclude_instance->single_product_variations_exclude( $product_id, $product, $settings );
+		}
+
+    	wp_send_json_success(['processed' => count($product_ids)]);
 	}
 
 	/** 
 	 * Get WooCommerce category list options.
 	 * 
 	 * @return array $category_list
+	 * @since 1.0.0
 	 */
 	public function get_woocommerce_category_list() {
 		$categories = get_terms( array(
@@ -524,6 +677,7 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * Get WooCommerce tag list options.
 	 * 
 	 * @return array $tag_list
+	 * @since 1.0.0
 	 */
 	public function get_woocommerce_tag_list() {
 		$tags = get_terms( array(
@@ -542,10 +696,11 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * 
 	 * @param array $tabs
 	 * @return array $tabs
+	 * @since 1.0.0
 	 */
 	public function add_single_variation_tab($tabs) {
 		$tabs['single_variation'] = array(
-			'label' => __('Single Variation', 'woo-variations-as-single-product'),
+			'label' => __('Single Variation', 'wc-variations-as-single-product'),
 			'target' => 'single_variation_options',
 			'priority' => 50,
 			'class' => 'show_if_variable',
@@ -558,6 +713,7 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * Add a new panel to the variable product panel
 	 * 
 	 * @return void
+	 * @since 1.0.0
 	 */
 	public function display_single_variation_panel() {
 		global $post;
@@ -573,8 +729,8 @@ class Woo_Variations_As_Single_Product_Admin {
 				woocommerce_wp_checkbox(
 					array(
 						'id'            => '_wvasp_single_exclude_varations',
-						'label'         => __( 'Exclude Variations', 'woo-variations-as-single-product' ),
-						'description'   => __( 'Check this box to exclude variations as single product.', 'woo-variations-as-single-product' ),
+						'label'         => __( 'Exclude Variations', 'wc-variations-as-single-product' ),
+						'description'   => __( 'Check this box to exclude variations as single product.', 'wc-variations-as-single-product' ),
 						'value' => $product->get_meta('_wvasp_single_exclude_varations', true),
 					)
 				);
@@ -583,8 +739,8 @@ class Woo_Variations_As_Single_Product_Admin {
 				woocommerce_wp_checkbox(
 					array(
 						'id'            => '_wvasp_single_hide_parent_product',
-						'label'         => __( 'Hide Parent Product', 'woo-variations-as-single-product' ),
-						'description'   => __( 'Check this box to hide the parent product when shows variations as single product.', 'woo-variations-as-single-product' ),
+						'label'         => __( 'Hide Parent Product', 'wc-variations-as-single-product' ),
+						'description'   => __( 'Check this box to hide the parent product when shows variations as single product.', 'wc-variations-as-single-product' ),
 						'value' => $product->get_meta('_wvasp_single_hide_parent_product', true),
 					)
 				);
@@ -599,6 +755,7 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * 
 	 * @param mixed $post_id
 	 * @return void
+	 * @since 1.0.0
 	 */
 	public function save_single_variation_panel($post_id) {
 		$product = wc_get_product($post_id);
@@ -614,6 +771,7 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * @param mixed $variation_data
 	 * @param mixed $variation
 	 * @return void
+	 * @since 1.0.0
 	 */
 	public function product_variation_meta_fields($loop, $variation_data, $variation) {
 		$exclude_variation = isset( $variation_data['_wvasp_single_exclude_variation'][0] ) ? $variation_data['_wvasp_single_exclude_variation'][0] : '';
@@ -626,10 +784,10 @@ class Woo_Variations_As_Single_Product_Admin {
 		woocommerce_wp_text_input(
 			array(
 				'id'            => 'variation_title[' . $variation->ID . ']',
-				'label'         => __( 'Single Variation Title', 'woo-variations-as-single-product' ),
+				'label'         => __( 'Single Variation Title', 'wc-variations-as-single-product' ),
 				'placeholder'   => '',
 				'wrapper_class'	=> ' form-row',
-				'description'   => __( 'Enter a custom title for this variation single product', 'woo-variations-as-single-product' ),
+				'description'   => __( 'Enter a custom title for this variation single product', 'wc-variations-as-single-product' ),
 				'value'         => $variation_title,
 			)
 		);
@@ -637,47 +795,37 @@ class Woo_Variations_As_Single_Product_Admin {
 		woocommerce_wp_checkbox(
 			array(
 				'id'            => 'exclude_variation[' . $variation->ID . ']',
-				'label'         => __( '	Exclude this variation to show as single product.', 'woo-variations-as-single-product' ),
+				'label'         => __( '	Exclude this variation to show as single product.', 'wc-variations-as-single-product' ),
 				'wrapper_class'	=> ' form-row wvasp-meta-checkbox',
 				'value'         => $exclude_variation,
 			)
 		);
 
 		// Show placeholder for free version
-		if( !defined('WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION') ) {
-			// Enable custom category for this variation checkbox
-			woocommerce_wp_checkbox(
-				array(
-					'id'            => 'custom_variation_cat[' . $variation->ID . ']',
-					'label'         => __( '	Enable custom category for this variation.', 'woo-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
-					'wrapper_class'	=> ' form-row wvasp-meta-checkbox',
-					'value'         => $custom_variation_cat,
-					'custom_attributes' => array(
-						'disabled' => 'disabled',
-					),
-				)
-			);
+		woocommerce_wp_checkbox(
+			array(
+				'id'            => 'custom_variation_cat[' . $variation->ID . ']',
+				'label'         => __( '	Enable custom category for this variation.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
+				'wrapper_class'	=> ' form-row wvasp-meta-checkbox',
+				'value'         => $custom_variation_cat,
+				'custom_attributes' => array(
+					'disabled' => 'disabled',
+				),
+			)
+		);
 
-			// Enable custom tags for this variation checkbox
-			woocommerce_wp_checkbox(
-				array(
-					'id'            => 'custom_variation_tag[' . $variation->ID . ']',
-					'label'         => __( '	Enable custom tags for this variation.', 'woo-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
-					'wrapper_class'	=> ' form-row wvasp-meta-checkbox',
-					'value'         => $custom_variation_tag,
-					'custom_attributes' => array(
-						'disabled' => 'disabled',
-					),
-				)
-			);
-		}
-
-		/**
-		 * Action hook to add custom fields to variation meta fields
-		 * 
-		 * @since 3.4.2
-		 */
-		do_action( 'wvasp_product_variation_meta_fields', $loop, $variation_data, $variation, $this->get_woocommerce_category_list(), $this->get_woocommerce_tag_list() );
+		// Enable custom tags for this variation checkbox
+		woocommerce_wp_checkbox(
+			array(
+				'id'            => 'custom_variation_tag[' . $variation->ID . ']',
+				'label'         => __( '	Enable custom tags for this variation.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
+				'wrapper_class'	=> ' form-row wvasp-meta-checkbox',
+				'value'         => $custom_variation_tag,
+				'custom_attributes' => array(
+					'disabled' => 'disabled',
+				),
+			)
+		);
 	}
 
 	/**
@@ -685,6 +833,7 @@ class Woo_Variations_As_Single_Product_Admin {
 	 *
 	 * @param int $variation_id
 	 * @return void
+	 * @since 1.0.0
 	 */
 
 	public function save_variation_settings_fields( $variation_id ) {
@@ -712,85 +861,13 @@ class Woo_Variations_As_Single_Product_Admin {
 
 		$product = wc_get_product( $post_id );
 
-		// Update terms of single variation product when parent product is updated
+		// Update terms & exclusion of single variation product when parent product is updated
 		if ( 'variable' === $product->get_type() ) {
-			$this->wvasp_terms_update_single_product( $post_id );
+			$taxonomy_instance = new Woo_Variations_As_Single_Product_Taxonomy();
+			$exclude_instance = new Woo_Variations_As_Single_Product_Exclude_Products( $this->version );
+
+			$taxonomy_instance->single_product_taxonomy_update( $post_id, $product );
+			$exclude_instance->variable_product_exclusion_on_product_update( $post_id, $product );
 		}
-	}
-
-	/**
-	 * Copy variable product terms to single variation 
-	 */
-	public function wvasp_terms_update() {
-		$batch_size = 20; // Number of products to process in each batch
-		$page = 1;
-
-		do {
-			// Fetch a batch of variable product IDs
-			$product_ids = wc_get_products( array(
-				'type'   => 'variable',
-				'limit'  => $batch_size,
-				'page'   => $page,
-				'return' => 'ids',
-			) );
-
-			// Process the current batch to update variation product terms
-			foreach ( $product_ids as $product_id ) {
-				$this->wvasp_terms_update_single_product( $product_id );
-			}
-
-			// error_log( 'Memory usage: ' . round( memory_get_usage() / 1024 / 1024, 2 ) . ' MB' );
-
-			$page++;
-		} while ( ! empty( $product_ids ) );
-	}
-
-	/**
-	 * Update single variation product terms
-	 */
-	public function wvasp_terms_update_single_product( $product_id ) {
-		$product = wc_get_product( $product_id );
-
-		// Get all terms of the variable product
-		$terms = array(
-			'product_cat' => wp_get_post_terms( $product->get_id(), 'product_cat', array( 'fields' => 'ids' ) ),
-			'product_tag' => wp_get_post_terms( $product->get_id(), 'product_tag', array( 'fields' => 'ids' ) ),
-		);
-
-		// Loop through all variations of the variable product
-		foreach ( $product->get_children() as $variation_id ) {
-			// check if custom category and tag is enabled
-			$custom_variation_cat = get_post_meta( $variation_id, '_wvasp_custom_single_variation_cat', true );
-			$custom_variation_tag = get_post_meta( $variation_id, '_wvasp_custom_single_variation_tag', true );
-
-			// if both are enabled then don't update terms, return
-			if ( 'yes' === $custom_variation_cat && 'yes' === $custom_variation_tag ) {
-				return;
-			}
-
-			// if custom category is not enabled, update category terms from parent product
-			if ( 'yes' != $custom_variation_cat ) {
-				wp_set_post_terms( $variation_id, $terms['product_cat'], 'product_cat', false );
-			}
-
-			// if custom tag is not enabled, update tag terms from parent product
-			if ( 'yes' != $custom_variation_tag ) {
-				wp_set_post_terms( $variation_id, $terms['product_tag'], 'product_tag', false );
-			}
-		}
-	}
-
-	/**
-	 * Schedule product exclusion on setting change
-	 * 
-	 * @return void
-	 * @since 3.5.0
-	 */
-	public function fire_schedule_product_exclusion_on_setting_change(){
-		// Fire product exclusion schedule
-		wp_clear_scheduled_hook( 'wvasp_schedule_product_exclusion' );
-		
-		// Fire after 5 seconds and Schedule the event to run every 24 hours
-		wp_schedule_event( time() + 5, 'daily', 'wvasp_schedule_product_exclusion' );
 	}
 }

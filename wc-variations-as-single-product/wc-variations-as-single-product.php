@@ -10,7 +10,7 @@
  * Requires Plugins:  woocommerce
  * Plugin URI:        https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/
  * Description:       Show variations as individual products on the Shop page, Product Category page, and Search result page
- * Version:           3.5.0
+ * Version:           4.0.0
  * Author:            StorePlugin
  * Author URI:        https://storeplugin.net
  * License:           GPL-2.0+
@@ -27,7 +27,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Currently plugin version.
  */
-define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_VERSION', '3.5.0' );
+define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_VERSION', '4.0.0' );
 
 define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT__FILE', __FILE__ );
 define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT__BASE', plugin_basename( __FILE__ ) );
@@ -47,6 +47,13 @@ function activate_woo_variations_as_single_product() {
 function deactivate_woo_variations_as_single_product() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-woo-variations-as-single-product-deactivator.php';
 	Woo_Variations_As_Single_Product_Deactivator::deactivate();
+}
+
+/**
+ * Disable the plugin if the pro version is active & the version is greater than or equal to 4.0.0
+ */
+if ( defined( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION' ) && version_compare( WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION, '4.0.0', '>=' ) ) {
+	return;
 }
 
 register_activation_hook( __FILE__, 'activate_woo_variations_as_single_product' );
