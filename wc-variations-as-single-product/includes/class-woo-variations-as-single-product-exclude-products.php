@@ -58,8 +58,10 @@ class Woo_Variations_As_Single_Product_Exclude_Products {
         delete_post_meta($product_id, '_wvasp_exclude');
 
         // Remove metadata '_wvasp_exclude' for its children
-        foreach ($variant_ids as $variant_id) {
-            delete_post_meta($variant_id, '_wvasp_exclude');
+        if ( ! empty( $variation_ids ) ) {
+            foreach ($variation_ids as $variation_id) {
+                delete_post_meta($variation_id, '_wvasp_exclude');
+            }
         }
     }
 
