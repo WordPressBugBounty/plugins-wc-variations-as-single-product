@@ -2,9 +2,9 @@
 Contributors: storeplugin
 Tags: WooCommerce, variations, single product, Single Variations, product variations
 Requires at least: 4.0
-Tested up to: 6.8
+Tested up to: 6.8.1
 Requires PHP: 7.0
-Stable tag: 4.0.1
+Stable tag: 4.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,12 +133,15 @@ Yes, this plugin is compatible with WooCommerce HPOS. (Pro feature)
 4. Change variation title
 
 == Changelog ==
+= 4.0.2 =
+* Other: Compatible with WordPress 6.8.1
+* Other: Compatible with WooCommerce 9.8.3
+
 = 4.0.1 =
 * Fix: Variation ID in metadata issue fixed
 * Other: Compatible with WordPress 6.8
 * Other: Compatible with WooCommerce 9.8.2
 
-== Changelog ==
 = 4.0.0 =
 * Enhance: Performance optimized.
 * Enhance: Update batch processing for product exclusion
