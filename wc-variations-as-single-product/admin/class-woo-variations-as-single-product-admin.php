@@ -487,6 +487,19 @@ class Woo_Variations_As_Single_Product_Admin {
 					'disabled' => 'disabled',
 				),
 			),
+			'enable_elementor_shop_title_support' => array(
+				'name'    => __( 'Enable Elementor Shop Title Support', 'wc-variations-as-single-product' ),
+				'type'    => 'checkbox',
+				'desc'    => __( 'Enable Elementor Shop Title Support', 'wc-variations-as-single-product' ). ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">'.__( 'Get Premium', 'wc-variations-as-single-product' ).'</a>',
+				'id'      => 'wvasp_enable_elementor_shop_title_support',
+				'row_class'	=> 'wvasp-pro-link-field-wrapper',
+				'default' => 'no',
+				'checked' => 'no',
+				'value'   => 'no',
+				'custom_attributes' => array(
+					'disabled' => 'disabled',
+				),
+			),
 			'legacy_product_exclude' => array(
 				'name'    => __( 'Legacy Product Exclude option', 'wc-variations-as-single-product' ),
 				'type'    => 'checkbox',
