@@ -643,9 +643,10 @@ class Woo_Variations_As_Single_Product_Admin {
 
 		$offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0; // Offset for batch processing
 		$limit = $batch_processing_amount ? $batch_processing_amount : 10; // Limit for batch processing, default 10
+		$variable_product_type = array_unique(array_merge(['variable'], apply_filters('wvasp_processing_extra_variable_types', array()))); // e.g., ['pw-gift-card']
 
 		$product_ids = wc_get_products( array(
-			'type'   => 'variable',
+			'type'   => $variable_product_type,
 			'limit'  => $limit,
 			'offset' => $offset,
 			'return' => 'ids',
