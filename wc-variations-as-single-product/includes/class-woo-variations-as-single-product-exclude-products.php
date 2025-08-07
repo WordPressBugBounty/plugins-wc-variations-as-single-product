@@ -198,8 +198,8 @@ class Woo_Variations_As_Single_Product_Exclude_Products {
      * @param array $single_settings
      * @return void
      */
-    public function exclude_parent_variable_products_forcefully( $product, $settings ){
-        if ( $single_settings['exclude_parent_products_forcefully'] != 'yes' ) {
+    public function exclude_parent_variable_products_forcefully( $product, $settings, $single_settings ){
+        if ( $settings['exclude_parent_products_forcefully'] != 'yes' ) {
             return; // return if exclude forcefully parent products is not enabled
         }
         

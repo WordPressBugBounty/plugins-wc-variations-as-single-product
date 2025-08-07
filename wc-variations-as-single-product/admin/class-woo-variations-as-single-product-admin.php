@@ -651,6 +651,13 @@ class Woo_Variations_As_Single_Product_Admin {
 			'offset' => $offset,
 			'return' => 'ids',
 		) );
+
+		$product_data_count = count($product_ids);
+		
+		// WPML Multilingual Support
+		if(function_exists('wpml_get_active_languages')){
+			$product_ids = $this->get_all_variable_products_multilingual($product_ids);
+		}
 		
 		//error_log('Product IDs: '.print_r($product_ids, true));
 
@@ -666,7 +673,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			$exclude_instance->single_product_variations_exclude( $product_id, $product, $settings );
 		}
 
-    	wp_send_json_success(['processed' => count($product_ids)]);
+    	wp_send_json_success(['processed' => $product_data_count]);
 	}
 
 	/** 
@@ -883,5 +890,30 @@ class Woo_Variations_As_Single_Product_Admin {
 			$taxonomy_instance->single_product_taxonomy_update( $post_id, $product );
 			$exclude_instance->variable_product_exclusion_on_product_update( $post_id, $product );
 		}
+	}
+
+	public function get_all_variable_products_multilingual($product_ids){
+		if ( empty( $product_ids ) || ! is_array( $product_ids ) ) {
+			return [];
+		}
+
+		$languages = apply_filters( 'wpml_active_languages', null, [ 'skip_missing' => 0 ] );
+
+		if ( empty( $languages ) ) {
+			return $product_ids;
+		}
+
+		$all_ids = array_fill_keys( $product_ids, true ); // Keep as keys to auto-unique
+
+		foreach ( $languages as $lang_code => $lang_info ) {
+			foreach ( $product_ids as $product_id ) {
+				$translated_id = apply_filters( 'wpml_object_id', $product_id, 'product', true, $lang_code );
+				if ( $translated_id ) {
+					$all_ids[ $translated_id ] = true;
+				}
+			}
+		}
+
+		return array_keys( $all_ids );
 	}
 }

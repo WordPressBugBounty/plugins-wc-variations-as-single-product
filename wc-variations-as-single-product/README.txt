@@ -4,7 +4,7 @@ Tags: WooCommerce, variations, single product, Single Variations, product variat
 Requires at least: 4.0
 Tested up to: 6.8.2
 Requires PHP: 7.0
-Stable tag: 4.0.4
+Stable tag: 4.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,11 @@ Yes, this plugin is compatible with WooCommerce HPOS. (Pro feature)
 4. Change variation title
 
 == Changelog ==
+
+= 4.1.0 =
+* New: WPML support added
+* Fix: Removed force parent product exclusion notice
+
 = 4.0.4 =
 * New: Added support for extra variable type post like Gift Voucher
 * Other: Compatible with WordPress 6.8.2
