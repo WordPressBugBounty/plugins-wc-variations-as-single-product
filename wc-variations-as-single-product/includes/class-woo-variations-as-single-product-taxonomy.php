@@ -74,6 +74,11 @@ class Woo_Variations_As_Single_Product_Taxonomy{
      * @return void
      */
     public function single_product_brand_update( $product ) {
+        // if 'product_brand' is not a taxonomy, return
+        if ( ! taxonomy_exists( 'product_brand' ) ) {
+            return;
+        }
+
         // If product is not a variable product, return
         if ( 'variable' != $product->get_type() ) {
             return;

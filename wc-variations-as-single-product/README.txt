@@ -4,7 +4,7 @@ Tags: WooCommerce, variations, single product, Single Variations, product variat
 Requires at least: 4.0
 Tested up to: 6.8.2
 Requires PHP: 7.0
-Stable tag: 4.1.0
+Stable tag: 4.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,11 @@ Yes, this plugin is compatible with WooCommerce HPOS. (Pro feature)
 4. Change variation title
 
 == Changelog ==
+
+= 4.1.1 =
+* New: Option to disable Variation as single product on Shop page
+* Fix: Product Brand taxonomy issue
+* Other: Compatible with WooCommerce 10.1.2
 
 = 4.1.0 =
 * New: WPML support added

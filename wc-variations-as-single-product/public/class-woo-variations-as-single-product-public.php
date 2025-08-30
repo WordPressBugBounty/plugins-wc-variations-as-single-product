@@ -81,6 +81,7 @@ class Woo_Variations_As_Single_Product_Public {
 	 */
 	public function variation_as_single_product ( $query ) {
 		$enable_variations_as_product = get_option( 'wvasp_enable_variations_as_product', 'no' );
+		$disable_shop_page_single_variation = get_option( 'wvasp_disable_shop_page_single_variation', 'no' );
 		$disable_category_page_single_variation = get_option( 'wvasp_disable_category_page_single_variation', 'no' );
 		$disable_tag_page_single_variation = get_option( 'wvasp_disable_tag_page_single_variation', 'no' );
 		$disable_search_page_single_variation = get_option( 'wvasp_disable_search_page_single_variation', 'no' );
@@ -90,6 +91,10 @@ class Woo_Variations_As_Single_Product_Public {
 		do_action( 'wvasp_variation_as_single_product_logic_start', $query );
 
 		if ( $enable_variations_as_product == 'no' ) {
+			return $query;
+		}
+
+		if ( is_shop() && $disable_shop_page_single_variation == 'yes' ) {
 			return $query;
 		}
 
@@ -136,12 +141,17 @@ class Woo_Variations_As_Single_Product_Public {
 	 */
 	public function variation_as_single_product_shortcode ( $query ) {
 		$enable_variations_as_product = get_option( 'wvasp_enable_variations_as_product', 'no' );
+		$disable_shop_page_single_variation = get_option( 'wvasp_disable_shop_page_single_variation', 'no' );
 		$disable_category_page_single_variation = get_option( 'wvasp_disable_category_page_single_variation', 'no' );
 		$disable_tag_page_single_variation = get_option( 'wvasp_disable_tag_page_single_variation', 'no' );
 		$disable_search_page_single_variation = get_option( 'wvasp_disable_search_page_single_variation', 'no' );
 		$legacy_product_exclude = get_option( 'wvasp_legacy_product_exclude', 'no' );
 
 		if ( $enable_variations_as_product == 'no' ) {
+			return $query;
+		}
+
+		if ( is_shop() && $disable_shop_page_single_variation == 'yes' ) {
 			return $query;
 		}
 

@@ -191,6 +191,7 @@ class Woo_Variations_As_Single_Product_Admin {
 	 */
 	public function get_variations_as_product_settings() {
 		$enable_variations_as_product = get_option( 'wvasp_enable_variations_as_product', 'no' );
+		$disable_shop_page_single_variation = get_option( 'wvasp_disable_shop_page_single_variation', 'no' );
 		$disable_category_page_single_variation = get_option( 'wvasp_disable_category_page_single_variation', 'no' );
 		$disable_tag_page_single_variation = get_option( 'wvasp_disable_tag_page_single_variation', 'no' );
 		$disable_search_page_single_variation = get_option( 'wvasp_disable_search_page_single_variation', 'no' );
@@ -216,6 +217,13 @@ class Woo_Variations_As_Single_Product_Admin {
 				'id'       => 'wvasp_enable_variations_as_product',
 				'checked' => $enable_variations_as_product === 'yes',
 				'value'	=> $enable_variations_as_product,
+			),
+			'disable_shop_page_single_variation' => array(
+				'type'     => 'checkbox',
+				'desc'     => __( 'Disable on Shop Page to display variations as a single product', 'wc-variations-as-single-product' ),
+				'id'       => 'wvasp_disable_shop_page_single_variation',
+				'checked' => $disable_shop_page_single_variation === 'yes',
+				'value'	=> $disable_shop_page_single_variation,
 			),
 			'disable_category_page_single_variation' => array(
 				'type'     => 'checkbox',
@@ -537,6 +545,9 @@ class Woo_Variations_As_Single_Product_Admin {
 		$wvasp_enable_variations_as_product = isset( $_POST['wvasp_enable_variations_as_product'] ) ? 'yes' : 'no';
 		update_option( 'wvasp_enable_variations_as_product', $wvasp_enable_variations_as_product );
 
+		$wvasp_disable_shop_page_single_variation = isset( $_POST['wvasp_disable_shop_page_single_variation'] ) ? 'yes' : 'no';
+		update_option( 'wvasp_disable_shop_page_single_variation', $wvasp_disable_shop_page_single_variation );
+
 		$wvasp_disable_category_page_single_variation = isset( $_POST['wvasp_disable_category_page_single_variation'] ) ? 'yes' : 'no';
 		update_option( 'wvasp_disable_category_page_single_variation', $wvasp_disable_category_page_single_variation );
 
@@ -591,6 +602,7 @@ class Woo_Variations_As_Single_Product_Admin {
 		// Sanitize and update settings
 		$settings = [
 			'wvasp_enable_variations_as_product' => isset( $_POST['wvasp_enable_variations_as_product'] ) ? 'yes' : 'no',
+			'wvasp_disable_shop_page_single_variation' => isset( $_POST['wvasp_disable_shop_page_single_variation'] ) ? 'yes' : 'no',
 			'wvasp_disable_category_page_single_variation' => isset( $_POST['wvasp_disable_category_page_single_variation'] ) ? 'yes' : 'no',
 			'wvasp_disable_tag_page_single_variation' => isset( $_POST['wvasp_disable_tag_page_single_variation'] ) ? 'yes' : 'no',
 			'wvasp_disable_search_page_single_variation' => isset( $_POST['wvasp_disable_search_page_single_variation'] ) ? 'yes' : 'no',
