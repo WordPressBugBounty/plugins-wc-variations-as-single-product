@@ -25,7 +25,6 @@
  * @since      1.0.0
  * @package    Woo_Variations_As_Single_Product
  * @subpackage Woo_Variations_As_Single_Product/includes
- * @author     StorePlugin <contact@storeplugin.net>
  */
 class Woo_Variations_As_Single_Product {
 
@@ -34,7 +33,6 @@ class Woo_Variations_As_Single_Product {
 	 * the plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   protected
 	 * @var      Woo_Variations_As_Single_Product_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
@@ -43,7 +41,6 @@ class Woo_Variations_As_Single_Product {
 	 * The unique identifier of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   protected
 	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
@@ -52,7 +49,6 @@ class Woo_Variations_As_Single_Product {
 	 * The current version of the plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   protected
 	 * @var      string    $version    The current version of the plugin.
 	 */
 	protected $version;
@@ -83,7 +79,7 @@ class Woo_Variations_As_Single_Product {
 	 * Include the following files that make up the plugin:
 	 *
 	 * - Woo_Variations_As_Single_Product_Loader. Orchestrates the hooks of the plugin.
-	 * - Woo_Variations_As_Single_Product_i18n. Defines internationalization functionality.
+	 * - Woo_Variations_As_Single_Product_I18n. Defines internationalization functionality.
 	 * - Woo_Variations_As_Single_Product_Admin. Defines all hooks for the admin area.
 	 * - Woo_Variations_As_Single_Product_Public. Defines all hooks for the public side of the site.
 	 *
@@ -91,7 +87,6 @@ class Woo_Variations_As_Single_Product {
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
 	private function load_dependencies() {
 
@@ -135,15 +130,14 @@ class Woo_Variations_As_Single_Product {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Woo_Variations_As_Single_Product_i18n class in order to set the domain and to register the hook
+	 * Uses the Woo_Variations_As_Single_Product_I18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Woo_Variations_As_Single_Product_i18n();
+		$plugin_i18n = new Woo_Variations_As_Single_Product_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -154,7 +148,6 @@ class Woo_Variations_As_Single_Product {
 	 * of the plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
 	private function define_admin_hooks() {
 
@@ -171,7 +164,7 @@ class Woo_Variations_As_Single_Product {
 
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'missing_woocommerce_notice');
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'settings_page_notice');
-		$this->loader->add_filter( 'plugin_action_links_'. WC_VARIATIONS_AS_SINGLE_PRODUCT__BASE, $plugin_admin, 'settings_link', 10, 2);
+		$this->loader->add_filter( 'plugin_action_links_' . WC_VARIATIONS_AS_SINGLE_PRODUCT__BASE, $plugin_admin, 'settings_link', 10, 2);
 
 		$this->loader->add_filter('admin_body_class', $plugin_admin, 'admin_body_class', 10, 1);
 
@@ -181,7 +174,6 @@ class Woo_Variations_As_Single_Product {
 		// WooCommerce settings tab
 		$this->loader->add_filter( 'woocommerce_settings_tabs_array', $plugin_admin, 'add_settings_tab', 99 );
 		$this->loader->add_action( 'woocommerce_settings_tabs_sp_variations_as_product', $plugin_admin, 'settings_tab' );
-		$this->loader->add_action( 'woocommerce_update_options_sp_variations_as_product', $plugin_admin, 'save_settings' );
 		// Register AJAX actions
 		$this->loader->add_action( 'wp_ajax_wvasp_save_settings', $plugin_admin, 'save_settings_ajax' );
 		$this->loader->add_action( 'wp_ajax_wvasp_batch_update_product_variations', $plugin_admin, 'batch_update_product_variations' );
@@ -194,7 +186,6 @@ class Woo_Variations_As_Single_Product {
 		$this->loader->add_action( 'woocommerce_product_after_variable_attributes', $plugin_admin, 'product_variation_meta_fields', 10, 3 );
 		$this->loader->add_action( 'woocommerce_save_product_variation', $plugin_admin, 'save_variation_settings_fields', 10, 2 );
 
-		//$this->loader->add_action( 'save_post', $plugin_admin, 'wvasp_update_on_product_update', 10, 3 );
 		$this->loader->add_action( 'woocommerce_update_product', $plugin_admin, 'wvasp_update_on_product_update', 10, 2 );
 	}
 
@@ -203,7 +194,6 @@ class Woo_Variations_As_Single_Product {
 	 * of the plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
 	private function define_public_hooks() {
 
@@ -219,16 +209,17 @@ class Woo_Variations_As_Single_Product {
 
 		// General filter to use in different query args
 		$this->loader->add_filter( 'wvasp_product_query_args_filter', $plugin_public, 'variation_as_single_product_shortcode' , 10, 1 ); //General Use
+		$this->loader->add_filter( 'bricks/posts/query_vars', $plugin_public, 'variation_as_single_product_shortcode', 20, 1 ); //Bricks Builder
 
 		
 		//$this->loader->add_filter( 'woocommerce_product_variation_title', $plugin_public, 'modify_variation_title', 10, 2 );
 		$this->loader->add_filter( 'the_title', $plugin_public, 'modify_variation_title', 10, 2 );
 
 		// "WooCommerce Wholesale Prices Premium" plugin support
-		$this->loader->add_filter( 'pre_get_posts',  $plugin_public, 'woocommerce_wholesale_prices_variation_support', 10, 2 );
+		$this->loader->add_filter( 'pre_get_posts', $plugin_public, 'woocommerce_wholesale_prices_variation_support', 10, 2 );
 
 		// Exclude products from being displayed as variations based on settings
-		$this->loader->add_action( 'pre_get_posts',  $plugin_public, 'variation_exclusion_meta_query', 9999999, 2 );
+		$this->loader->add_action( 'pre_get_posts', $plugin_public, 'variation_exclusion_meta_query', 9999999, 2 );
 	}
 
 	/**

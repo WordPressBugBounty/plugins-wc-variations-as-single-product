@@ -230,3 +230,18 @@ input.wvasp-text-field {
 .wc-settings-row-wvasp-hide-field {
 	display: none;
 }
+
+.wc-settings-row-wvasp-inner-radio ,
+.wc-settings-row-wvasp-sub-inner-select {
+	display: none;
+}
+.wc-settings-row-wvasp-inner-radio .forminp.forminp-radio {
+	margin-top: -20px;
+	margin-left: 35px;
+	padding-bottom: 0;
+}
+.wc-settings-row-wvasp-sub-inner-select .forminp.forminp-multiselect {
+	margin-left: 60px;
+	margin-top: -15px;
+	padding-bottom: 0;
+}

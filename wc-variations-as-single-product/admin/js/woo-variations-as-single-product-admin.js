@@ -122,4 +122,36 @@ jQuery(document).ready(function ($) {
 		});
 	}
 
+	function toggleCategoryPageSettings() {
+        const $disableCategoryPage       = $('#wvasp_disable_category_page_single_variation');
+        const $categoryPageOptions       = $('input[name="wvasp_disable_category_page_on_selected_or_all"]');
+        const $optionRow                 = $('.wc-settings-row-wvasp-inner-radio').closest('tr');
+        const $variationRow              = $('.wc-settings-row-wvasp-sub-inner-select').closest('tr');
+
+        // UI updater
+        const updateUI = () => {
+            const categoryDisabled = $disableCategoryPage.is(':checked');
+            const optionValue      = $categoryPageOptions.filter(':checked').val();
+
+            if (!categoryDisabled) {
+                $optionRow.hide();
+                $variationRow.hide();
+                return;
+            }
+
+            // Main ON state
+            $optionRow.show();
+            $variationRow.toggle(optionValue === 'selected');
+        };
+
+        // Bind events
+        $disableCategoryPage.on('change', updateUI);
+        $categoryPageOptions.on('change', updateUI);
+
+        // Initial render
+        updateUI();
+    }
+
+    toggleCategoryPageSettings();
+
 });

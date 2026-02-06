@@ -15,7 +15,6 @@
  *
  * @package    Woo_Variations_As_Single_Product
  * @subpackage Woo_Variations_As_Single_Product/public
- * @author     StorePlugin <contact@storeplugin.net>
  */
 class Woo_Variations_As_Single_Product_Public {
 
@@ -23,7 +22,6 @@ class Woo_Variations_As_Single_Product_Public {
 	 * The ID of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
 	private $plugin_name;
@@ -32,7 +30,6 @@ class Woo_Variations_As_Single_Product_Public {
 	 * The version of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
 	private $version;
@@ -140,6 +137,15 @@ class Woo_Variations_As_Single_Product_Public {
 	 * @return object
 	 */
 	public function variation_as_single_product_shortcode ( $query ) {
+		// Avoid altering non-product Bricks loops early
+		if ( isset( $query['post_type'] ) ) {
+			$post_types = (array) $query['post_type'];
+
+			if ( ! in_array( 'product', $post_types, true ) ) {
+				return $query;
+			}
+		}
+		
 		$enable_variations_as_product = get_option( 'wvasp_enable_variations_as_product', 'no' );
 		$disable_shop_page_single_variation = get_option( 'wvasp_disable_shop_page_single_variation', 'no' );
 		$disable_category_page_single_variation = get_option( 'wvasp_disable_category_page_single_variation', 'no' );

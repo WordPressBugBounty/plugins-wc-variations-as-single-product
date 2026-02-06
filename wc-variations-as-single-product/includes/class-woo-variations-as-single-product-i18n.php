@@ -22,9 +22,8 @@
  * @since      1.0.0
  * @package    Woo_Variations_As_Single_Product
  * @subpackage Woo_Variations_As_Single_Product/includes
- * @author     StorePlugin <contact@storeplugin.net>
  */
-class Woo_Variations_As_Single_Product_i18n {
+class Woo_Variations_As_Single_Product_I18n {
 
 
 	/**
@@ -39,9 +38,5 @@ class Woo_Variations_As_Single_Product_i18n {
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
-
 	}
-
-
-
 }
