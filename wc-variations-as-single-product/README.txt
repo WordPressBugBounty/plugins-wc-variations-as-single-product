@@ -2,9 +2,9 @@
 Contributors: storeplugin
 Tags: WooCommerce, variations, single product, Single Variations, product variations
 Requires at least: 4.0
-Tested up to: 6.9
+Tested up to: 6.9.1
 Requires PHP: 7.0
-Stable tag: 4.1.3
+Stable tag: 4.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,10 @@ Yes, this plugin is compatible with WooCommerce HPOS. (Pro feature)
 4. Change variation title
 
 == Changelog ==
+
+= 4.1.4 =
+* Other: Compatible with WordPress 6.9.1
+* Other: Compatible with WooCommerce 10.5.2
 
 = 4.1.3 =
 * New: Bricks builder Compatible with product variation
