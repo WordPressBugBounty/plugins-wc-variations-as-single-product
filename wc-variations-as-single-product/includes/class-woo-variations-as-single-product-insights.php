@@ -62,8 +62,8 @@ class Woo_Variations_As_Single_Product_Insights {
 			<p><strong><?php printf( esc_html__( 'Help us improve %s', 'wc-variations-as-single-product' ), esc_html( $this->plugin_name ) ); ?></strong></p>
 			<p>
 				<?php
-				// translators: %s is the plugin name
 				printf(
+					// translators: 1: Plugin name, 2: HTML link to "what we collect".
 					esc_html__( 'Would you like to help us improve %1$s by sharing diagnostic and usage data? This information helps us make the plugin even more powerful.(%2$s)', 'wc-variations-as-single-product' ),
 					esc_html( $this->plugin_name ),
 					wp_kses_post( __( '<a class="sp-data-collect" href="#">what we collect</a>', 'wc-variations-as-single-product' ) )

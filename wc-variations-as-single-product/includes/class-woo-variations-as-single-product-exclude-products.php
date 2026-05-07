@@ -10,7 +10,6 @@ class Woo_Variations_As_Single_Product_Exclude_Products {
 	 * The version of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
 	private $version;
@@ -87,7 +86,6 @@ class Woo_Variations_As_Single_Product_Exclude_Products {
 
 		$exclude_parent_products_forcefully = $settings['exclude_parent_products_forcefully'];
 
-		// $product = wc_get_product( $product_id );
 		$variation_ids = $product->get_children();
 		$status        = $product->get_status();
 
@@ -285,6 +283,7 @@ class Woo_Variations_As_Single_Product_Exclude_Products {
 		}
 
 		// With WPDB
+		/* phpcs:disable Squiz.PHP.CommentedOutCode.Found */
 		/*
 		global $wpdb;
 		$exclude_count = $wpdb->get_var(

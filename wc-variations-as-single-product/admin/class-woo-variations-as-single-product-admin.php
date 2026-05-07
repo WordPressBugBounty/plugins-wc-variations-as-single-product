@@ -15,7 +15,6 @@
  *
  * @package    Woo_Variations_As_Single_Product
  * @subpackage Woo_Variations_As_Single_Product/admin
- * @author     StorePlugin <contact@storeplugin.net>
  */
 class Woo_Variations_As_Single_Product_Admin {
 
@@ -23,7 +22,6 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * The ID of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
 	private $plugin_name;
@@ -32,7 +30,6 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * The version of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
 	private $version;
@@ -78,6 +75,7 @@ class Woo_Variations_As_Single_Product_Admin {
 				'nonce'    => wp_create_nonce( 'wvasp_save_settings_nonce' ),
 				'i18n'     => array(
 					'updating'      => __( 'Product are updating', 'wc-variations-as-single-product' ),
+					/* translators: %1$s: processed products, %2$s: total products. */
 					'progress_text' => __( '%1$s of %2$s products updated', 'wc-variations-as-single-product' ),
 					'completed'     => __( 'Update Completed!', 'wc-variations-as-single-product' ),
 					'error_setting' => __( 'An error occurred while saving settings.', 'wc-variations-as-single-product' ),
@@ -103,7 +101,7 @@ class Woo_Variations_As_Single_Product_Admin {
 	}
 
 	/**
-	 * warning if WooCommerce is not active
+	 * Warning if WooCommerce is not active
 	 *
 	 * @since    1.0.0
 	 */
@@ -111,7 +109,7 @@ class Woo_Variations_As_Single_Product_Admin {
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			?>
 				<div class="notice notice-error">
-					<p><?php _e( 'Variations as Single Product for WooCommerce requires WooCommerce to be installed and activated', 'wc-variations-as-single-product' ); ?></p>
+					<p><?php esc_html_e( 'Variations as Single Product for WooCommerce requires WooCommerce to be installed and activated', 'wc-variations-as-single-product' ); ?></p>
 				</div>
 			<?php
 		}
@@ -123,14 +121,14 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * @since    3.0.0
 	 */
 	public function settings_page_notice() {
-		// if ( isset( $_GET['page'] ) && $_GET['page'] === 'wc-settings' && isset( $_GET['tab'] ) && $_GET['tab'] === 'sp_variations_as_product' ) {
 		if ( defined( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION' ) && version_compare( WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION, '4.0.0', '<' ) ) {
 			?>
 				<div class="notice notice-error">
 					<p>
 					<?php
-					printf(
-						__( 'You are using an outdated version of <strong>"Variations as Single Product (Pro)"</strong>, which limit functionality. Please update to the latest version from your account at %s to access all features.', 'wc-variations-as-single-product' ),
+					printf( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- safe HTML tags intended.
+						/* translators: %s: storeplugin.net account URL. */
+						wp_kses_post( __( 'You are using an outdated version of <strong>"Variations as Single Product (Pro)"</strong>, which limit functionality. Please update to the latest version from your account at %s to access all features.', 'wc-variations-as-single-product' ) ),
 						'<a href="https://storeplugin.net/account/" target="_blank">storeplugin.net</a>'
 					);
 					?>
@@ -138,7 +136,6 @@ class Woo_Variations_As_Single_Product_Admin {
 				</div>
 			<?php
 		}
-		// }
 	}
 
 	public function manual_update_notice_for_pro_plugin( $file, $plugin_data ) {
@@ -175,7 +172,7 @@ class Woo_Variations_As_Single_Product_Admin {
 	 *
 	 * @param array $settings_tabs
 	 * @return array $settings_tabs
-	 */
+		 */
 	public function add_settings_tab( $tabs ) {
 		$tabs['sp_variations_as_product'] = __( 'Variations as Product', 'wc-variations-as-single-product' );
 		return $tabs;
@@ -534,6 +531,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'legacy_product_exclude'                     => array(
 				'name'    => __( 'Legacy Product Exclude option', 'wc-variations-as-single-product' ),
 				'type'    => 'checkbox',
+				/* translators: %s: Contact email link. */
 				'desc'    => __( 'Enable Legacy Exclude Option (Use Only If Exclude Is Not Working). <span class="wvasp-in-legacy">' . __( 'Legacy', 'wc-variations-as-single-product' ) . '</span><span class="wvasp-notice wvasp-notice-error">' . __( 'We recommend avoiding the use of this feature, as it will be removed in the next major update. Only use it if variation exclusion is not functioning properly, and contact us for assistance in resolving the issue. <a href="mailto:contact@storeplugin.net?subject=Product%20Excluding%20Issue%20%28Legacy%29">contact us</a>.', 'wc-variations-as-single-product' ) . '</span>', 'wc-variations-as-single-product' ),
 				'id'      => 'wvasp_legacy_product_exclude',
 				'default' => 'no',
@@ -555,51 +553,9 @@ class Woo_Variations_As_Single_Product_Admin {
 			),
 		);
 
+		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 		// return apply_filters( 'woo_variations_as_single_product_settings', $settings );
 		return $settings;
-	}
-
-	/**
-	 * Save the new fields for the tab
-	 *
-	 * @return void
-	 */
-	public function save_settings() {
-		$wvasp_enable_variations_as_product = isset( $_POST['wvasp_enable_variations_as_product'] ) ? 'yes' : 'no';
-		update_option( 'wvasp_enable_variations_as_product', $wvasp_enable_variations_as_product );
-
-		$wvasp_disable_shop_page_single_variation = isset( $_POST['wvasp_disable_shop_page_single_variation'] ) ? 'yes' : 'no';
-		update_option( 'wvasp_disable_shop_page_single_variation', $wvasp_disable_shop_page_single_variation );
-
-		$wvasp_disable_category_page_single_variation = isset( $_POST['wvasp_disable_category_page_single_variation'] ) ? 'yes' : 'no';
-		update_option( 'wvasp_disable_category_page_single_variation', $wvasp_disable_category_page_single_variation );
-
-		$wvasp_disable_tag_page_single_variation = isset( $_POST['wvasp_disable_tag_page_single_variation'] ) ? 'yes' : 'no';
-		update_option( 'wvasp_disable_tag_page_single_variation', $wvasp_disable_tag_page_single_variation );
-
-		$wvasp_disable_search_page_single_variation = isset( $_POST['wvasp_disable_search_page_single_variation'] ) ? 'yes' : 'no';
-		update_option( 'wvasp_disable_search_page_single_variation', $wvasp_disable_search_page_single_variation );
-
-		$wvasp_hide_parent_products = isset( $_POST['wvasp_hide_parent_products'] ) ? 'yes' : 'no';
-		update_option( 'wvasp_hide_parent_products', $wvasp_hide_parent_products );
-
-		$wvasp_exclude_parent_products_forcefully = isset( $_POST['wvasp_exclude_parent_products_forcefully'] ) ? 'yes' : 'no';
-		update_option( 'wvasp_exclude_parent_products_forcefully', $wvasp_exclude_parent_products_forcefully );
-
-		$wvasp_exclude_category_fields = isset( $_POST['wvasp_exclude_category_fields'] ) ? array_map( 'sanitize_text_field', $_POST['wvasp_exclude_category_fields'] ) : array();
-		update_option( 'wvasp_exclude_category_fields', $wvasp_exclude_category_fields );
-
-		$wvasp_exclude_child_category_fields = isset( $_POST['wvasp_exclude_child_category_fields'] ) ? 'yes' : 'no';
-		update_option( 'wvasp_exclude_child_category_fields', $wvasp_exclude_child_category_fields );
-
-		$wvasp_exclude_tag_fields = isset( $_POST['wvasp_exclude_tag_fields'] ) ? array_map( 'sanitize_text_field', $_POST['wvasp_exclude_tag_fields'] ) : array();
-		update_option( 'wvasp_exclude_tag_fields', $wvasp_exclude_tag_fields );
-
-		$wvasp_legacy_product_exclude = isset( $_POST['wvasp_legacy_product_exclude'] ) ? 'yes' : 'no';
-		update_option( 'wvasp_legacy_product_exclude', $wvasp_legacy_product_exclude );
-
-		$wvasp_batch_processing_amount = isset( $_POST['wvasp_batch_processing_amount'] ) ? intval( $_POST['wvasp_batch_processing_amount'] ) : 10;
-		update_option( 'wvasp_batch_processing_amount', $wvasp_batch_processing_amount );
 	}
 
 	/**
@@ -631,9 +587,9 @@ class Woo_Variations_As_Single_Product_Admin {
 			'wvasp_disable_search_page_single_variation'   => isset( $_POST['wvasp_disable_search_page_single_variation'] ) ? 'yes' : 'no',
 			'wvasp_hide_parent_products'                   => isset( $_POST['wvasp_hide_parent_products'] ) ? 'yes' : 'no',
 			'wvasp_exclude_parent_products_forcefully'     => isset( $_POST['wvasp_exclude_parent_products_forcefully'] ) ? 'yes' : 'no',
-			'wvasp_exclude_category_fields'                => isset( $_POST['wvasp_exclude_category_fields'] ) ? array_map( 'sanitize_text_field', $_POST['wvasp_exclude_category_fields'] ) : array(),
+			'wvasp_exclude_category_fields'                => isset( $_POST['wvasp_exclude_category_fields'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['wvasp_exclude_category_fields'] ) ) : array(),
 			'wvasp_exclude_child_category_fields'          => isset( $_POST['wvasp_exclude_child_category_fields'] ) ? 'yes' : 'no',
-			'wvasp_exclude_tag_fields'                     => isset( $_POST['wvasp_exclude_tag_fields'] ) ? array_map( 'sanitize_text_field', $_POST['wvasp_exclude_tag_fields'] ) : array(),
+			'wvasp_exclude_tag_fields'                     => isset( $_POST['wvasp_exclude_tag_fields'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['wvasp_exclude_tag_fields'] ) ) : array(),
 			'wvasp_legacy_product_exclude'                 => isset( $_POST['wvasp_legacy_product_exclude'] ) ? 'yes' : 'no',
 			'wvasp_batch_processing_amount'                => isset( $_POST['wvasp_batch_processing_amount'] ) ? intval( $_POST['wvasp_batch_processing_amount'] ) : 10,
 		);
@@ -673,6 +629,14 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * @since 4.0.0
 	 */
 	public function batch_update_product_variations() {
+		if ( ! check_ajax_referer( 'wvasp_save_settings_nonce', 'nonce', false ) ) {
+			wp_send_json_error( __( 'Invalid nonce.', 'wc-variations-as-single-product' ) );
+		}
+
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( __( 'You do not have permission to perform this action.', 'wc-variations-as-single-product' ) );
+		}
+
 		// Generale settings
 		$settings                                       = array();
 		$settings['exclude_parent_products']            = get_option( 'wvasp_hide_parent_products', 'no' );
@@ -702,8 +666,6 @@ class Woo_Variations_As_Single_Product_Admin {
 		if ( function_exists( 'wpml_get_active_languages' ) ) {
 			$product_ids = $this->get_all_variable_products_multilingual( $product_ids );
 		}
-
-		// error_log('Product IDs: '.print_r($product_ids, true));
 
 		// make instance of class
 		$taxonomy_instance = new Woo_Variations_As_Single_Product_Taxonomy();
@@ -827,6 +789,10 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * @since 1.0.0
 	 */
 	public function save_single_variation_panel( $post_id ) {
+		if ( ! isset( $_POST['woocommerce_meta_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['woocommerce_meta_nonce'] ) ), 'woocommerce_save_data' ) ) {
+			return;
+		}
+
 		$product = wc_get_product( $post_id );
 		$product->update_meta_data( '_wvasp_single_exclude_varations', isset( $_POST['_wvasp_single_exclude_varations'] ) ? 'yes' : 'no' );
 		$product->update_meta_data( '_wvasp_single_hide_parent_product', isset( $_POST['_wvasp_single_hide_parent_product'] ) ? 'yes' : 'no' );
@@ -905,12 +871,16 @@ class Woo_Variations_As_Single_Product_Admin {
 	 * @since 1.0.0
 	 */
 	public function save_variation_settings_fields( $variation_id ) {
+		if ( ! isset( $_POST['security'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['security'] ) ), 'save-variations' ) ) {
+			return;
+		}
+
 		// Save "Exclude Variations" checkbox
 		$exclude_variation = isset( $_POST['exclude_variation'][ $variation_id ] ) ? 'yes' : 'no';
 		update_post_meta( $variation_id, '_wvasp_single_exclude_variation', $exclude_variation );
 
 		// Save "Variation Title" text field
-		$variation_title = isset( $_POST['variation_title'][ $variation_id ] ) ? $_POST['variation_title'][ $variation_id ] : '';
+		$variation_title = isset( $_POST['variation_title'][ $variation_id ] ) ? wc_clean( wp_unslash( $_POST['variation_title'][ $variation_id ] ) ) : '';
 		update_post_meta( $variation_id, '_wvasp_single_variation_title', $variation_title );
 	}
 
@@ -919,10 +889,9 @@ class Woo_Variations_As_Single_Product_Admin {
 	 *
 	 * @param int   $post_id
 	 * @param mixed $post
-	 * @param bool  $update
 	 * @return void
 	 */
-	public function wvasp_update_on_product_update( $post_id, $post = null, $update = false ) {
+	public function wvasp_update_on_product_update( $post_id, $post = null ) {
 		if ( 'product' !== get_post_type( $post_id ) ) {
 			return;
 		}
