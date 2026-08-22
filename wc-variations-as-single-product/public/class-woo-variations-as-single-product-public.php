@@ -571,4 +571,97 @@ class Woo_Variations_As_Single_Product_Public {
 		// Set the updated meta_query
 		$query->set( 'meta_query', $meta_query );
 	}
+
+	/**
+	 * Polylang compatibility for variation product loops.
+	 *
+	 * Polylang restricts product queries to posts holding the current `language`
+	 * term. Product variations are not a translated post type, so they never get
+	 * a language term and are stripped out of every front-end product loop.
+	 *
+	 * Widen Polylang's language clause so a variation qualifies through the
+	 * language of its parent product.
+	 *
+	 * @since 1.0.0
+	 * @param array    $clauses The query clauses.
+	 * @param WP_Query $query   The query object.
+	 * @return array
+	 */
+	public function polylang_variation_language_clauses( $clauses, $query ) {
+		global $wpdb;
+
+		if ( ! defined( 'POLYLANG_VERSION' ) || empty( $clauses['where'] ) ) {
+			return $clauses;
+		}
+
+		// Only queries this plugin opened up to variations need the workaround.
+		if ( ! in_array( 'product_variation', (array) $query->get( 'post_type' ), true ) ) {
+			return $clauses;
+		}
+
+		$language_tt_ids = $this->polylang_language_tt_ids();
+
+		if ( empty( $language_tt_ids ) ) {
+			return $clauses;
+		}
+
+		$pattern = '/' . preg_quote( $wpdb->term_relationships, '/' ) . '\.term_taxonomy_id IN \(\s*([0-9,\s]+?)\s*\)/';
+
+		$clauses['where'] = preg_replace_callback(
+			$pattern,
+			function ( $matches ) use ( $wpdb, $language_tt_ids ) {
+				$tt_ids = array_map( 'absint', array_filter( array_map( 'trim', explode( ',', $matches[1] ) ), 'strlen' ) );
+
+				// Leave every clause alone except the one Polylang builds from the `language` taxonomy.
+				if ( empty( $tt_ids ) || array_diff( $tt_ids, $language_tt_ids ) ) {
+					return $matches[0];
+				}
+
+				return sprintf(
+					'( %1$s OR ( %2$s.post_type = \'product_variation\' AND %2$s.post_parent IN ( SELECT object_id FROM %3$s WHERE term_taxonomy_id IN (%4$s) ) ) )',
+					$matches[0],
+					$wpdb->posts,
+					$wpdb->term_relationships,
+					implode( ',', $tt_ids )
+				);
+			},
+			$clauses['where']
+		);
+
+		return $clauses;
+	}
+
+	/**
+	 * Term taxonomy ids of every Polylang language term.
+	 *
+	 * @since 1.0.0
+	 * @return array
+	 */
+	protected function polylang_language_tt_ids() {
+		static $tt_ids = null;
+
+		if ( null !== $tt_ids ) {
+			return $tt_ids;
+		}
+
+		$tt_ids = array();
+
+		if ( ! taxonomy_exists( 'language' ) ) {
+			return $tt_ids;
+		}
+
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+				'fields'     => 'tt_ids',
+			)
+		);
+
+		if ( ! is_wp_error( $terms ) ) {
+			$tt_ids = array_map( 'absint', $terms );
+		}
+
+		return $tt_ids;
+	}
 }

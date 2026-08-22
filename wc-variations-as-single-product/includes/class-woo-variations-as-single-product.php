@@ -218,6 +218,9 @@ class Woo_Variations_As_Single_Product {
 		// "WooCommerce Wholesale Prices Premium" plugin support
 		$this->loader->add_filter( 'pre_get_posts', $plugin_public, 'woocommerce_wholesale_prices_variation_support', 10, 2 );
 
+		// Polylang plugin support
+		$this->loader->add_filter( 'posts_clauses', $plugin_public, 'polylang_variation_language_clauses', 999, 2 );
+
 		// Exclude products from being displayed as variations based on settings
 		$this->loader->add_action( 'pre_get_posts', $plugin_public, 'variation_exclusion_meta_query', 9999999, 2 );
 	}
