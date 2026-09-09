@@ -5,7 +5,7 @@
  * Requires Plugins:  woocommerce
  * Plugin URI:        https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/
  * Description:       Show variations as individual products on the Shop page, Product Category page, and Search result page
- * Version:           4.1.9
+ * Version:           4.1.10
  * Author:            StorePlugin
  * Author URI:        https://storeplugin.net
  * License:           GPL-2.0+
@@ -22,7 +22,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Currently plugin version.
  */
-define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_VERSION', '4.1.9' );
+define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_VERSION', '4.1.10' );
 
 define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT__FILE', __FILE__ );
 define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT__BASE', plugin_basename( __FILE__ ) );
@@ -81,9 +81,11 @@ run_woo_variations_as_single_product();
  *
  * @return void
  */
-add_action( 'before_woocommerce_init', 'declare_hpos_compatibility' );
-function declare_hpos_compatibility() {
-	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+add_action( 'before_woocommerce_init', 'wvasp_declare_hpos_compatibility' );
+if ( ! function_exists( 'wvasp_declare_hpos_compatibility' ) ) {
+	function wvasp_declare_hpos_compatibility() {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
 	}
 }
