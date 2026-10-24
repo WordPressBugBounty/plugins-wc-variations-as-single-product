@@ -573,6 +573,51 @@ class Woo_Variations_As_Single_Product_Public {
 	}
 
 	/**
+	 * Keep variations in line with their parent product's catalog visibility and password.
+	 *
+	 * Variations carry no `product_visibility` terms of their own, so WooCommerce's
+	 * visibility tax query never removes them, and they never carry a password.
+	 * Drop a variation from the loop when its parent is hidden from the current
+	 * context (catalog or search) or is password protected.
+	 *
+	 * @since 4.1.11
+	 * @param array    $clauses The query clauses.
+	 * @param WP_Query $query   The query object.
+	 * @return array
+	 */
+	public function variation_parent_visibility_clauses( $clauses, $query ) {
+		global $wpdb;
+
+		if ( is_admin() && ! wp_doing_ajax() ) {
+			return $clauses;
+		}
+
+		// Only the product loops this plugin opened up to variations.
+		$post_types = (array) $query->get( 'post_type' );
+		if ( ! in_array( 'product', $post_types, true ) || ! in_array( 'product_variation', $post_types, true ) ) {
+			return $clauses;
+		}
+
+		$visibility_term_ids = wc_get_product_visibility_term_ids();
+		$hidden_term         = $query->is_search() ? 'exclude-from-search' : 'exclude-from-catalog';
+
+		$conditions = array(
+			"{$wpdb->posts}.post_parent NOT IN ( SELECT wvasp_parent.ID FROM {$wpdb->posts} AS wvasp_parent WHERE wvasp_parent.post_type = 'product' AND wvasp_parent.post_password <> '' )",
+		);
+
+		if ( ! empty( $visibility_term_ids[ $hidden_term ] ) ) {
+			$conditions[] = $wpdb->prepare(
+				"{$wpdb->posts}.post_parent NOT IN ( SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id = %d )",
+				$visibility_term_ids[ $hidden_term ]
+			);
+		}
+
+		$clauses['where'] .= " AND ( {$wpdb->posts}.post_type <> 'product_variation' OR ( " . implode( ' AND ', $conditions ) . ' ) )';
+
+		return $clauses;
+	}
+
+	/**
 	 * Polylang compatibility for variation product loops.
 	 *
 	 * Polylang restricts product queries to posts holding the current `language`

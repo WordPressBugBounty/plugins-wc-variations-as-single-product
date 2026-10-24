@@ -68,9 +68,52 @@ class Woo_Variations_As_Single_Product {
 
 		$this->load_dependencies();
 		$this->set_locale();
+
+		// Without WooCommerce only the admin notice runs; every other hook relies on WooCommerce functions.
+		if ( ! self::is_woocommerce_active() ) {
+			$this->define_woocommerce_missing_hooks();
+			return;
+		}
+
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
+	}
+
+	/**
+	 * Whether WooCommerce is active.
+	 *
+	 * This plugin can load before WooCommerce, so the active plugin lists are checked
+	 * as well as the WooCommerce class.
+	 *
+	 * @since    4.1.11
+	 * @return   bool
+	 */
+	public static function is_woocommerce_active() {
+		if ( class_exists( 'WooCommerce' ) ) {
+			return true;
+		}
+
+		$active_plugins = (array) get_option( 'active_plugins', array() );
+
+		if ( is_multisite() ) {
+			$active_plugins = array_merge( $active_plugins, array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) ) );
+		}
+
+		// An active entry can outlive a deleted plugin folder.
+		return in_array( 'woocommerce/woocommerce.php', $active_plugins, true ) && file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' );
+	}
+
+	/**
+	 * Register the hooks used while WooCommerce is inactive.
+	 *
+	 * @since    4.1.11
+	 */
+	private function define_woocommerce_missing_hooks() {
+
+		$plugin_admin = new Woo_Variations_As_Single_Product_Admin( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'missing_woocommerce_notice' );
 	}
 
 	/**
@@ -223,6 +266,9 @@ class Woo_Variations_As_Single_Product {
 
 		// Exclude products from being displayed as variations based on settings
 		$this->loader->add_action( 'pre_get_posts', $plugin_public, 'variation_exclusion_meta_query', 9999999, 2 );
+
+		// Variations follow their parent's catalog visibility and password protection
+		$this->loader->add_filter( 'posts_clauses', $plugin_public, 'variation_parent_visibility_clauses', 20, 2 );
 	}
 
 	/**

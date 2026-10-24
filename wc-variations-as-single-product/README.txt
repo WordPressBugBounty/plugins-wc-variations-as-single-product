@@ -2,9 +2,9 @@
 Contributors: storeplugin
 Tags: WooCommerce, variations, single product, Single Variations, product variations
 Requires at least: 4.0
-Tested up to: 7.1
+Tested up to: 7.1.3
 Requires PHP: 7.0
-Stable tag: 4.1.10
+Stable tag: 4.1.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,13 @@ Yes, this plugin is compatible with WooCommerce HPOS. (Pro feature)
 4. Change variation title
 
 == Changelog ==
+
+= 4.1.11 =
+* Fix: Variations follow their parent product's catalog visibility and password protection
+* Fix: No errors on the front end when WooCommerce is inactive
+* Fix: Settings script and styles load only on the plugin settings tab and product edit screen
+* Tweak: Settings labels use sentence case
+* Other: Compatible with WordPress 7.1.3
 
 = 4.1.10 =
 * Fix: Same function declared Error
