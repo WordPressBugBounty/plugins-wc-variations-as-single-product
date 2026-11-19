@@ -6,7 +6,7 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce
+ * @link       https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce
  * @since      1.0.0
  *
  * @package    Woo_Variations_As_Single_Product

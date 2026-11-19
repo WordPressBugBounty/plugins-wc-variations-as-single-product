@@ -6,7 +6,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce
+ * @link       https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce
  * @since      1.0.0
  *
  * @package    Woo_Variations_As_Single_Product

@@ -3,7 +3,7 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce
+ * @link       https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce
  * @since      1.0.0
  *
  * @package    Woo_Variations_As_Single_Product
@@ -155,9 +155,9 @@ class Woo_Variations_As_Single_Product_Admin {
 					<p>
 					<?php
 					printf( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- safe HTML tags intended.
-						/* translators: %s: storeplugin.net account URL. */
+						/* translators: %s: heliumwp.com account URL. */
 						wp_kses_post( __( 'You are using an outdated version of <strong>"Variations as Single Product (Pro)"</strong>, which limit functionality. Please update to the latest version from your account at %s to access all features.', 'wc-variations-as-single-product' ) ),
-						'<a href="https://storeplugin.net/account/" target="_blank">storeplugin.net</a>'
+						'<a href="https://account.heliumwp.com/" target="_blank">heliumwp.com</a>'
 					);
 					?>
 					</p>
@@ -170,7 +170,7 @@ class Woo_Variations_As_Single_Product_Admin {
 		if ( strpos( $file, 'wc-variations-as-single-product-pro.php' ) !== false && defined( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION' ) && version_compare( WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION, '3.4.0', '<' ) ) {
 			echo '<tr class="plugin-update-tr"><td colspan="3" class="plugin-update colspanchange">
 					<div class="update-message notice inline notice-warning notice-alt">
-						<p>There is a new version of Variations as Single Product for WooCommerce (Pro). <a href="https://storeplugin.net/account/" target="_blank">View version 3.4.5 details</a> <em>Automatic update is unavailable for this plugin</em></p>
+						<p>There is a new version of Variations as Single Product for WooCommerce (Pro). <a href="https://account.heliumwp.com/" target="_blank">View version 3.4.5 details</a> <em>Automatic update is unavailable for this plugin</em></p>
 					</div>
 				  </td></tr>';
 		}
@@ -189,7 +189,7 @@ class Woo_Variations_As_Single_Product_Admin {
 		array_unshift( $links, $settings_link );
 
 		if ( ! defined( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_PRO_VERSION' ) ) {
-			$links['get_pro'] = '<a class="wvasp-get-pro" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Upgrade to Pro', 'wc-variations-as-single-product' ) . '</a>';
+			$links['get_pro'] = '<a class="wvasp-get-pro" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Upgrade to Pro', 'wc-variations-as-single-product' ) . '</a>';
 		}
 
 		return $links;
@@ -313,7 +313,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'enable_filter_by_attribute'                 => array(
 				'name'              => __( 'Enable filter by attribute', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'Enable to filter single variant by attributes like color, size etc on shop/category pages.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Enable to filter single variant by attributes like color, size etc on shop/category pages.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_enable_filter_by_attribute',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -351,7 +351,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'exclude_attributes_fields'                  => array(
 				'name'              => __( 'Exclude product attributes', 'wc-variations-as-single-product' ),
 				'type'              => 'text',
-				'desc'              => __( 'Select the product attribute that will be excluded from single variation.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Select the product attribute that will be excluded from single variation.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_exclude_attributes_fields',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'class'             => 'wvasp-text-field',
@@ -363,7 +363,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'ignore_combine_attribute_variants'          => array(
 				'name'              => __( 'Ignore combined attributes', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'When excluding a product attribute, retain the variant if it has multiple attributes.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'When excluding a product attribute, retain the variant if it has multiple attributes.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'desc_tip'          => __( 'E.g.  Excluding the <em>`pa_color`</em> attribute will only exclude variations with <em>`pa_color`</em> alone, but will retain variants that have both <em>`pa_color`</em> and <em>`pa_size`</em> or other combinations.', 'wc-variations-as-single-product' ),
 				'id'                => 'wvasp_ignore_combine_attribute_variants',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
@@ -376,7 +376,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'disable_cart_for_excluded_attributes'       => array(
 				'name'              => __( 'Disable cart button for excluded attribute products', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'When an attribute is excluded, the first available option is automatically selected to add to the cart. Instead, display a "Select Options" link to the product page.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'When an attribute is excluded, the first available option is automatically selected to add to the cart. Instead, display a "Select Options" link to the product page.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'desc_tip'          => __( 'Excluding any attribute (e.g. <em>`pa_size`</em>) causes the add-to-cart process to automatically select a size (e.g., <em>`XL`</em>). To prevent this, replace the add-to-cart button with a <em>"Select Options"</em> button directs to the product page, similar to the parent variable product.', 'wc-variations-as-single-product' ),
 				'id'                => 'wvasp_disable_cart_for_excluded_attributes',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
@@ -389,7 +389,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'variation_title_field'                      => array(
 				'name'              => __( 'Single variation title', 'wc-variations-as-single-product' ),
 				'type'              => 'text',
-				'desc'              => __( 'Global title for variation single product. Use <strong>{title}</strong> for parent title and <strong>{attributes}</strong> for attributes values.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>' . __( '<br/>E.g. {title} in {attributes} => Hoodie in Red, XXL<br/>E.g. {title} in {attributes} => Hoodie in Color Red <em>(Attributes Structure : {attribute_name} {attribute_value})</em><br/>E.g. {attributes} {title} => Red Hoodie <em>(Attributes Structure : {attribute_value})</em>', 'wc-variations-as-single-product' ),
+				'desc'              => __( 'Global title for variation single product. Use <strong>{title}</strong> for parent title and <strong>{attributes}</strong> for attributes values.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>' . __( '<br/>E.g. {title} in {attributes} => Hoodie in Red, XXL<br/>E.g. {title} in {attributes} => Hoodie in Color Red <em>(Attributes Structure : {attribute_name} {attribute_value})</em><br/>E.g. {attributes} {title} => Red Hoodie <em>(Attributes Structure : {attribute_value})</em>', 'wc-variations-as-single-product' ),
 				'id'                => 'wvasp_variation_title_field',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'class'             => 'wvasp-text-field',
@@ -401,7 +401,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'variation_title_attributes_field'           => array(
 				'name'              => __( 'Attributes structure', 'wc-variations-as-single-product' ),
 				'type'              => 'text',
-				'desc'              => __( 'Defines how attribute data is structured. Use <strong>{attribute_name}</strong> for attribute\'s name and <strong>{attribute_value}</strong> for value.' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>' . __( '<br/>E.g. {attribute_name} {attribute_value} => Color Red<br/>E.g. {attribute_name}: {attribute_value} => Color: Red<br/>E.g. {attribute_value} => Red', 'wc-variations-as-single-product' ),
+				'desc'              => __( 'Defines how attribute data is structured. Use <strong>{attribute_name}</strong> for attribute\'s name and <strong>{attribute_value}</strong> for value.' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>' . __( '<br/>E.g. {attribute_name} {attribute_value} => Color Red<br/>E.g. {attribute_name}: {attribute_value} => Color: Red<br/>E.g. {attribute_value} => Red', 'wc-variations-as-single-product' ),
 				'id'                => 'wvasp_variation_title_attributes_field',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'class'             => 'wvasp-text-field',
@@ -413,7 +413,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'variation_title_attributes_seperator_field' => array(
 				'name'              => __( 'Attributes separator', 'wc-variations-as-single-product' ),
 				'type'              => 'text',
-				'desc'              => __( 'Specifies the character used to separate attribute values, such as comma (,) or "and".', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Specifies the character used to separate attribute values, such as comma (,) or "and".', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_variation_title_attributes_seperator_field',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'class'             => 'wvasp-text-field',
@@ -425,7 +425,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'sort_variation_product'                     => array(
 				'name'              => __( 'Sort variation products', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'Place single variation product to there actual position. Generally, single variation products are displayed at the end of the product list.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Place single variation product to there actual position. Generally, single variation products are displayed at the end of the product list.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_sort_variation_product',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -438,7 +438,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'sort_popularity_variation_product'          => array(
 				'name'              => __( 'Sort variation products by popularity', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'Sort variation products based on individual popularity. The parent product\'s popularity reflects the combined popularity of all its variations, while each variation displays popularity based on its specific ranking within orders.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Sort variation products based on individual popularity. The parent product\'s popularity reflects the combined popularity of all its variations, while each variation displays popularity based on its specific ranking within orders.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_sort_popularity_variation_product',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -451,7 +451,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'sort_rating_variation_product'              => array(
 				'name'              => __( 'Sort variation products by rating', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'Sort variation products based on the parent product\'s rating. Each variation inherits the rating directly from its parent product, ensuring consistent display across all variations.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Sort variation products based on the parent product\'s rating. Each variation inherits the rating directly from its parent product, ensuring consistent display across all variations.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_sort_rating_variation_product',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -464,7 +464,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'sort_date_variation_product'                => array(
 				'name'              => __( 'Sort variation products by date', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'Match single variation product date to parent product date. Variation products have their own dates, so when sorting by date, they appear in different positions than the parent product.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Match single variation product date to parent product date. Variation products have their own dates, so when sorting by date, they appear in different positions than the parent product.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_sort_date_variation_product',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -477,7 +477,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'hide_out_of_stock_variation_product'        => array(
 				'name'              => __( 'Hide out-of-stock variations', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'Hide out-of-stock product variations from the shop list. If a variation is out of stock or managed by stock quantity and the quantity is 0 or less, it will be hidden.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Hide out-of-stock product variations from the shop list. If a variation is out of stock or managed by stock quantity and the quantity is 0 or less, it will be hidden.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_hide_out_of_stock_variation_product',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -494,7 +494,7 @@ class Woo_Variations_As_Single_Product_Admin {
 					'Hide product variations with backorder status. Sometimes, it\'s necessary to hide backorder variations, and this setting will enable that. (Will work with both \'Allow, but notify customer\' and 
 				\'Allow\')',
 					'wc-variations-as-single-product'
-				) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_hie_backorder_variation_product',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -507,7 +507,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'enable_variation_on_related_products'       => array(
 				'name'              => __( 'Enable variations on related products', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'Enable variations on related products', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Enable variations on related products', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_enable_variation_on_related_products',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -520,7 +520,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'enable_variation_on_upsell_products'        => array(
 				'name'              => __( 'Enable variations on upsells', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'Enable variations on upsell products', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Enable variations on upsell products', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_enable_variation_on_upsell_products',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -533,7 +533,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'enable_variation_on_cross_sells'            => array(
 				'name'              => __( 'Enable variations on cross-sells', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'Enable variations on cross-sell products', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Enable variations on cross-sell products', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_enable_variation_on_cross_sells',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -546,7 +546,7 @@ class Woo_Variations_As_Single_Product_Admin {
 			'enable_elementor_shop_title_support'        => array(
 				'name'              => __( 'Enable Elementor shop title support', 'wc-variations-as-single-product' ),
 				'type'              => 'checkbox',
-				'desc'              => __( 'Enable Elementor shop title support', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'desc'              => __( 'Enable Elementor shop title support', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'id'                => 'wvasp_enable_elementor_shop_title_support',
 				'row_class'         => 'wvasp-pro-link-field-wrapper',
 				'default'           => 'no',
@@ -560,7 +560,7 @@ class Woo_Variations_As_Single_Product_Admin {
 				'name'    => __( 'Legacy product exclude option', 'wc-variations-as-single-product' ),
 				'type'    => 'checkbox',
 				/* translators: %s: Contact email link. */
-				'desc'    => __( 'Enable legacy exclude option (use only if exclude is not working). <span class="wvasp-in-legacy">' . __( 'Legacy', 'wc-variations-as-single-product' ) . '</span><span class="wvasp-notice wvasp-notice-error">' . __( 'We recommend avoiding the use of this feature, as it will be removed in the next major update. Only use it if variation exclusion is not functioning properly, and contact us for assistance in resolving the issue. <a href="mailto:contact@storeplugin.net?subject=Product%20Excluding%20Issue%20%28Legacy%29">contact us</a>.', 'wc-variations-as-single-product' ) . '</span>', 'wc-variations-as-single-product' ),
+				'desc'    => __( 'Enable legacy exclude option (use only if exclude is not working). <span class="wvasp-in-legacy">' . __( 'Legacy', 'wc-variations-as-single-product' ) . '</span><span class="wvasp-notice wvasp-notice-error">' . __( 'We recommend avoiding the use of this feature, as it will be removed in the next major update. Only use it if variation exclusion is not functioning properly, and contact us for assistance in resolving the issue. <a href="mailto:contact@heliumwp.com?subject=Product%20Excluding%20Issue%20%28Legacy%29">contact us</a>.', 'wc-variations-as-single-product' ) . '</span>', 'wc-variations-as-single-product' ),
 				'id'      => 'wvasp_legacy_product_exclude',
 				'default' => 'no',
 				'checked' => $legacy_product_exclude === 'yes',
@@ -868,7 +868,7 @@ class Woo_Variations_As_Single_Product_Admin {
 		woocommerce_wp_checkbox(
 			array(
 				'id'                => 'custom_variation_cat[' . $variation->ID . ']',
-				'label'             => __( '	Enable custom category for this variation.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'label'             => __( '	Enable custom category for this variation.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'wrapper_class'     => ' form-row wvasp-meta-checkbox',
 				'value'             => $custom_variation_cat,
 				'custom_attributes' => array(
@@ -881,7 +881,7 @@ class Woo_Variations_As_Single_Product_Admin {
 		woocommerce_wp_checkbox(
 			array(
 				'id'                => 'custom_variation_tag[' . $variation->ID . ']',
-				'label'             => __( '	Enable custom tags for this variation.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
+				'label'             => __( '	Enable custom tags for this variation.', 'wc-variations-as-single-product' ) . ' <a class="premium-tag-link" href="https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=activesite&utm_campaign=singlevar&utm_medium=link" target="_blank">' . __( 'Get Premium', 'wc-variations-as-single-product' ) . '</a>',
 				'wrapper_class'     => ' form-row wvasp-meta-checkbox',
 				'value'             => $custom_variation_tag,
 				'custom_attributes' => array(
@@ -908,7 +908,7 @@ class Woo_Variations_As_Single_Product_Admin {
 		update_post_meta( $variation_id, '_wvasp_single_exclude_variation', $exclude_variation );
 
 		// Save "Variation Title" text field
-		$variation_title = isset( $_POST['variation_title'][ $variation_id ] ) ? wc_clean( wp_unslash( $_POST['variation_title'][ $variation_id ] ) ) : '';
+		$variation_title = isset( $_POST['variation_title'][ $variation_id ] ) ? sanitize_text_field( wp_unslash( $_POST['variation_title'][ $variation_id ] ) ) : '';
 		update_post_meta( $variation_id, '_wvasp_single_variation_title', $variation_title );
 	}
 

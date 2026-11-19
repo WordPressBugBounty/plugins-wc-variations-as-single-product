@@ -9,7 +9,7 @@ class Woo_Variations_As_Single_Product_Insights {
 	private $plugin_file          = WC_VARIATIONS_AS_SINGLE_PRODUCT__FILE;
 	private $plugin_base          = WC_VARIATIONS_AS_SINGLE_PRODUCT__BASE;
 	private $api_url              = 'https://insight.storeplugin.net/';
-	private $policy_url           = 'https://storeplugin.net/privacy-policy/';
+	private $policy_url           = 'https://heliumwp.com/privacy-policy/';
 	private $data_collect         = array(
 		'server_info'   => 'Server informations(php, mysql, server, WordPress versions)',
 		'plugins_list'  => 'Plugins List',

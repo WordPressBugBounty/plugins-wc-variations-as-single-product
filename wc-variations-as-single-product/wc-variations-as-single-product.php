@@ -3,11 +3,11 @@
 /**
  * Plugin Name:       Variations as Single Product for WooCommerce
  * Requires Plugins:  woocommerce
- * Plugin URI:        https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/
+ * Plugin URI:        https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/
  * Description:       Show variations as individual products on the Shop page, Product Category page, and Search result page
- * Version:           4.1.11
- * Author:            StorePlugin
- * Author URI:        https://storeplugin.net
+ * Version:           4.1.12
+ * Author:            HeliumWP
+ * Author URI:        https://heliumwp.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       wc-variations-as-single-product
@@ -22,7 +22,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Currently plugin version.
  */
-define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_VERSION', '4.1.11' );
+define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT_VERSION', '4.1.12' );
 
 define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT__FILE', __FILE__ );
 define( 'WC_VARIATIONS_AS_SINGLE_PRODUCT__BASE', plugin_basename( __FILE__ ) );

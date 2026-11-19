@@ -1,10 +1,10 @@
 === Variations as Single Product - Display Single Variation for WooCommerce ===
-Contributors: storeplugin
+Contributors: storeplugin, heliumwp
 Tags: WooCommerce, variations, single product, Single Variations, product variations
-Requires at least: 4.0
-Tested up to: 7.1.3
-Requires PHP: 7.0
-Stable tag: 4.1.11
+Requires at least: 5.0
+Tested up to: 7.1.5
+Requires PHP: 7.4
+Stable tag: 4.1.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,7 @@ With the Variations as Single Product for WooCommerce plugin, you can simplify y
 
 By default, WooCommerce groups all variants within a single variation product, requiring users to navigate to the single product page to choose a variation and add it to their cart. With this plugin, users can easily add variations directly from the Shop page, as it converts all variations into single products.
 
-👉 [Variations as Single Product Feature](https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=wporg&utm_campaign=singlevar&utm_medium=link) | [Support](https://storeplugin.net/contact-us/) | [Purchase Pro](https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=wporg&utm_campaign=singlevar&utm_medium=link)
+👉 [Variations as Single Product Feature](https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=wporg&utm_campaign=singlevar&utm_medium=link) | [Support](https://heliumwp.com/contact-us/) | [Purchase Pro](https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=wporg&utm_campaign=singlevar&utm_medium=link)
 
 
 == Key features: ==
@@ -63,7 +63,7 @@ By default, WooCommerce groups all variants within a single variation product, r
 * Compatible with WooCommerce Wholesale Prices
 * Compatible with YITH WooCommerce Quick View
 
-👉 [Get Variations as Single Product Pro](https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce/?utm_source=wporg&utm_campaign=singlevar&utm_medium=link)
+👉 [Get Variations as Single Product Pro](https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce/?utm_source=wporg&utm_campaign=singlevar&utm_medium=link)
 
 == Frequently Asked Questions ==
 
@@ -133,6 +133,10 @@ Yes, this plugin is compatible with WooCommerce HPOS. (Pro feature)
 4. Change variation title
 
 == Changelog ==
+
+= 4.1.12 =
+* Other: Compatible with WordPress 7.1.5
+* Other: Compatible with WooCommerce 11.3.0
 
 = 4.1.11 =
 * Fix: Variations follow their parent product's catalog visibility and password protection

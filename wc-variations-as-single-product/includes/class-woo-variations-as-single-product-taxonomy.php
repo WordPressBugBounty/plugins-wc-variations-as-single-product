@@ -4,7 +4,7 @@
  *
  * A class definition that modifies the taxonomy of the plugin in admin side.
  *
- * @link       https://storeplugin.net/plugins/variations-as-single-product-for-woocommerce
+ * @link       https://heliumwp.com/plugins/variations-as-single-product-for-woocommerce
  * @since      4.0.0
  *
  * @package    Woo_Variations_As_Single_Product
